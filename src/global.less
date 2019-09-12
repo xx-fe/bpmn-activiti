@@ -1,0 +1,109 @@
+@import '~antd/lib/style/themes/default.less';
+
+html,
+body,
+#root {
+    height: 100%;
+}
+
+.colorWeak {
+    filter: invert(80%);
+}
+
+.ant-layout {
+    min-height: 100vh;
+}
+
+canvas {
+    display: block;
+}
+
+body {
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+.globalSpin {
+    width: 100%;
+    margin: 40px 0 !important;
+}
+
+ul,
+ol {
+    list-style: none;
+}
+
+/* 设置滚动条的样式 */
+::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+    background-color: #fafafa;
+}
+
+/* 滚动槽 */
+::-webkit-scrollbar-track {
+    border-radius: 12px;
+}
+
+/* 滚动条滑块 */
+::-webkit-scrollbar-thumb {
+    background: #c1c1c1;
+    border-radius: 12px;
+}
+
+// antd table text 居中
+.ant-table {
+    .ant-table-thead > tr > th,
+    .ant-table-tbody > tr > td {
+        text-align: center;
+    }
+}
+
+@media (max-width: @screen-xs) {
+    .ant-table {
+        width: 100%;
+        overflow-x: auto;
+        &-thead > tr,
+        &-tbody > tr {
+            > th,
+            > td {
+                white-space: pre;
+                > span {
+                    display: block;
+                }
+            }
+        }
+    }
+}
+
+// 去除 antd 按钮默认 focus 颜色
+.ant-btn:focus {
+    color: @text-color;
+    background-color: #fff;
+    border-color: @border-color-base;
+}
+.ant-btn-primary:focus {
+    color: #fff;
+    background-color: @primary-color;
+    border-color: @primary-color;
+}
+.ant-btn-danger:focus {
+    color: @error-color;
+    background-color: #f5f5f5;
+    border-color: @border-color-base;
+}
+.ant-btn-dashed:focus {
+    color: @text-color;
+    background-color: #fff;
+    border-style: dashed;
+    border-color: @border-color-base;
+}
+
+// 限制小屏幕时 区间选择器的 width
+@media screen and (max-width: @screen-xs) {
+    .ant-calendar.ant-calendar-range {
+        width: 100%;
+        max-width: 552px;
+    }
+}
