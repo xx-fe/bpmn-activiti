@@ -8,7 +8,7 @@ class Bpmn extends Component {
         const {callback} = this.props;
         let viewer = new BpmnViewer({
             container: '#canvas',
-            // height: 400
+            height: 400,
         });
 
         viewer.importXML(diagramXML, function(err) {
@@ -24,7 +24,7 @@ class Bpmn extends Component {
             let eventBus = viewer.get('eventBus');
             // you may hook into any of the following events
             let events = [
-                // 'element.hover',
+                'element.hover',
                 // 'element.out',
                 'element.click',
                 // 'element.dblclick',
@@ -56,11 +56,47 @@ class Bpmn extends Component {
     }
 
     render() {
+        const t = [
+            {id: 'Process_2', time: '2019-09-21 10:00:00', user: '张三', mark: '通过'},
+            {
+                id: 'SequenceFlow_0l6oqvc',
+                time: '2019-09-21 10:10:00',
+                user: '李四',
+                mark: '不通过，请修改资料',
+            },
+            {
+                id: 'Process_2',
+                time: '2019-09-21 10:20:00',
+                user: '张三',
+                mark: '通过，资料已修补，请审核',
+            },
+            {id: 'SequenceFlow_0l6oqvc', time: '2019-09-21 10:10:00', user: '李四', mark: '通过'},
+            {id: 'SequenceFlow_1js3qmv', time: '2019-09-21 10:30:00', user: '王五', mark: '通过'},
+        ];
         const {data} = this.props;
         return (
             <Fragment>
-                <div id="canvas" style={{height: '100%'}} />
-                <div>{data.id}</div>
+                <div id="canvas" style={{height: '400px'}} />
+                {/* {data.id} */}
+                {t
+                    .filter(v => v.id === data.id)
+                    .map((v, index) => {
+                        return (
+                            <ul
+                                key={index}
+                                style={
+                                    {
+                                        // marginTop: '-163px'
+                                    }
+                                }
+                            >
+                                <li>
+                                    {v.time}&nbsp;&nbsp;&nbsp;&nbsp;{v.user}&nbsp;&nbsp;&nbsp;&nbsp;
+                                    {v.mark}
+                                </li>
+                            </ul>
+                        );
+                    })}
             </Fragment>
         );
     }
