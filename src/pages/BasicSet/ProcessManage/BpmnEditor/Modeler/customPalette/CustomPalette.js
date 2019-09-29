@@ -59,6 +59,10 @@ export default class CustomPalette {
             return action;
         }
 
+        function createParticipant(event, collapsed) {
+            create.start(event, elementFactory.createParticipantShape(collapsed));
+        }
+
         assign(actions, [
             {
                 title: translate('Tools'),
@@ -141,12 +145,92 @@ export default class CustomPalette {
                         ...createAction('bpmn:StartEvent', 'event', 'bpmn-icon-start-event-none'),
                     },
                     {
-                        id: 'create.user-task',
-                        ...createAction('bpmn:UserTask', 'activity', 'bpmn-icon-user-task'),
+                        id: 'create.intermediate-event',
+                        ...createAction(
+                            'bpmn:IntermediateThrowEvent',
+                            'event',
+                            'bpmn-icon-intermediate-event-none',
+                            'Create Intermediate/Boundary Event'
+                        ),
                     },
                     {
                         id: 'create.end-event',
                         ...createAction('bpmn:EndEvent', 'event', 'bpmn-icon-end-event-none'),
+                    },
+                    {
+                        id: 'create.task',
+                        ...createAction('bpmn:Task', 'activity', 'bpmn-icon-task'),
+                    },
+
+                    {
+                        id: 'create.user-task',
+                        ...createAction('bpmn:UserTask', 'activity', 'bpmn-icon-user-task'),
+                    },
+                ],
+            },
+            {
+                group: 'model',
+                title: '其他',
+                children: [
+                    // {
+                    //     id:'tool-separator',
+                    //     group: 'tools',
+                    //     separator: true,
+                    //     title:''
+                    // },
+                    // {
+                    //     id:'custom-separator',
+                    //     group: 'custom',
+                    //     separator: true,
+                    //     title:''
+                    // },
+                    {
+                        id: 'create.participant-expanded',
+                        group: 'collaboration',
+                        className: 'bpmn-icon-participant',
+                        title: translate('Create Pool/Participant'),
+                        action: {
+                            dragstart: createParticipant,
+                            click: createParticipant,
+                        },
+                    },
+                    {
+                        id: 'create.subprocess-expanded',
+                        ...createAction(
+                            'bpmn:SubProcess',
+                            'activity',
+                            'bpmn-icon-subprocess-expanded',
+                            'Create expanded SubProcess',
+                            {isExpanded: true}
+                        ),
+                    },
+                    {
+                        id: 'create.group',
+                        ...createAction(
+                            'bpmn:Group',
+                            'artifact',
+                            'bpmn-icon-group',
+                            'Create Group'
+                        ),
+                    },
+
+                    {
+                        id: 'create.data-object',
+                        ...createAction(
+                            'bpmn:DataObjectReference',
+                            'data-object',
+                            'bpmn-icon-data-object',
+                            'Create DataObjectReference'
+                        ),
+                    },
+                    {
+                        id: 'create.data-store',
+                        ...createAction(
+                            'bpmn:DataStoreReference',
+                            'data-store',
+                            'bpmn-icon-data-store',
+                            'Create DataStoreReference'
+                        ),
                     },
                 ],
             },

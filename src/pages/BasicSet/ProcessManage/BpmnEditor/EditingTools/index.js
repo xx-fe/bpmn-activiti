@@ -14,7 +14,7 @@ class EditingTools extends Component {
             onZoomReset,
             onUndo,
             onRedo,
-            // onSave,
+            onSave,
             onDownloadXml,
             onDownloadSvg,
             onPreview,
@@ -63,11 +63,11 @@ class EditingTools extends Component {
                         </button>
                     </li>
 
-                    {/* <li className={styles.control}>
+                    <li className={styles.control}>
                         <button type="button" title="保存流程" onClick={onSave}>
                             <i className={styles.save} />
                         </button>
-                    </li> */}
+                    </li>
                     <li className={styles.control}>
                         <button type="button" title="下载BPMN文件" onClick={onDownloadXml}>
                             <i className={styles.download} />
