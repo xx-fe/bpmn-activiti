@@ -41,6 +41,21 @@ export default [
                         name: 'processTrace', // 流程跟踪
                         component: './BasicSet/ProcessTrace/index',
                     },
+                    {
+                        path: '/basicSet/phoneInput',
+                        name: 'phoneInput', // 流程跟踪
+                        component: './BasicSet/PhoneInput/index',
+                    },
+                    {
+                        path: '/basicSet/pcInput',
+                        name: 'pcInput', // 流程跟踪
+                        component: './BasicSet/PcInput/index',
+                    },
+                    {
+                        path: '/basicSet/list',
+                        name: 'list', // 流程跟踪
+                        component: './BasicSet/List/index',
+                    },
                 ],
             },
             {
