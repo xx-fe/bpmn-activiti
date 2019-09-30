@@ -1,81 +1,128 @@
-import {Table, Divider, Tag} from 'antd';
+import { Table, Divider, Tag } from 'antd';
 
+import PageHeaderWrapper from '@/components/PageHeaderWrapper';
 const columns = [
     {
-        title: 'Name',
-        dataIndex: 'name',
-        key: 'name',
+        title: '作业流水号',
+        dataIndex: 'taskId',
+        key: 'taskId',
         render: text => <a>{text}</a>,
     },
     {
-        title: 'Age',
-        dataIndex: 'age',
-        key: 'age',
+        title: 'Paty_No',
+        dataIndex: 'partyNo',
+        key: 'partyNo',
     },
     {
-        title: 'Address',
-        dataIndex: 'address',
-        key: 'address',
+        title: '客户名称',
+        dataIndex: 'userName',
+        key: 'userName',
     },
     {
-        title: 'Tags',
-        key: 'tags',
-        dataIndex: 'tags',
-        render: tags => (
-            <span>
-                {tags.map(tag => {
-                    let color = tag.length > 5 ? 'geekblue' : 'green';
-                    if (tag === 'loser') {
-                        color = 'volcano';
-                    }
-                    return (
-                        <Tag color={color} key={tag}>
-                            {tag.toUpperCase()}
-                        </Tag>
-                    );
-                })}
-            </span>
-        ),
+        title: '核查类型',
+        key: 'bizType',
+        dataIndex: 'bizType',
     },
     {
-        title: 'Action',
-        key: 'action',
-        render: (text, record) => (
-            <span>
-                <a>Invite {record.name}</a>
-                <Divider type="vertical" />
-                <a>Delete</a>
-            </span>
-        ),
+        title: '生成时间',
+        key: 'createdAt',
+        dataIndex: 'createdAt',
     },
+    {
+        title: '审核人',
+        key: 'lastOpr',
+        dataIndex: 'lastOpr',
+    },
+    {
+        title: '审核时间',
+        key: 'lastOprTime',
+        dataIndex: 'lastOprTime',
+    },
+    // {
+    //     title: '操作',
+    //     key: 'action',
+    //     render: (text, record) => (
+    //         <span>
+    //             <a>审核</a>
+    //         </span>
+    //     ),
+    // },
 ];
 
 const data = [
     {
-        key: '1',
-        name: 'John Brown',
-        age: 32,
-        address: 'New York No. 1 Lake Park',
-        tags: ['nice', 'developer'],
+        "taskId": "233333",  //作业流水号
+        "userId": "233333333",
+        "partyNo": "2019061120001",   //客户号
+        "userName": "客户",   //客户姓名
+        "createdAt": "2019-06-12",  //生成日期
+        "bizType": "OPEN_ACCOUNT", //业务类型  
+        "taskStatus": "WAIT_INPUT", //审核状态
+        "lastOpr": "张三",   //审核人
+        "lastOprTime": "2019-06-12", //审核时间
+    },         
+    {
+        "taskId": "233333",  //作业流水号
+        "userId": "233333333",
+        "partyNo": "2019061120001",   //客户号
+        "userName": "客户",   //客户姓名
+        "createdAt": "2019-06-12",  //生成日期
+        "bizType": "OPEN_ACCOUNT", //业务类型  
+        "taskStatus": "WAIT_INPUT", //审核状态
+        "lastOpr": "张三",   //审核人
+        "lastOprTime": "2019-06-12", //审核时间
+    },
+
+    {
+        "taskId": "233333",  //作业流水号
+        "userId": "233333333",
+        "partyNo": "2019061120001",   //客户号
+        "userName": "客户",   //客户姓名
+        "createdAt": "2019-06-12",  //生成日期
+        "bizType": "OPEN_ACCOUNT", //业务类型  
+        "taskStatus": "WAIT_INPUT", //审核状态
+        "lastOpr": "张三",   //审核人
+        "lastOprTime": "2019-06-12", //审核时间
     },
     {
-        key: '2',
-        name: 'Jim Green',
-        age: 42,
-        address: 'London No. 1 Lake Park',
-        tags: ['loser'],
+        "taskId": "233333",  //作业流水号
+        "userId": "233333333",
+        "partyNo": "2019061120001",   //客户号
+        "userName": "客户",   //客户姓名
+        "createdAt": "2019-06-12",  //生成日期
+        "bizType": "OPEN_ACCOUNT", //业务类型  
+        "taskStatus": "WAIT_INPUT", //审核状态
+        "lastOpr": "张三",   //审核人
+        "lastOprTime": "2019-06-12", //审核时间
     },
     {
-        key: '3',
-        name: 'Joe Black',
-        age: 32,
-        address: 'Sidney No. 1 Lake Park',
-        tags: ['cool', 'teacher'],
+        "taskId": "233333",  //作业流水号
+        "userId": "233333333",
+        "partyNo": "2019061120001",   //客户号
+        "userName": "客户",   //客户姓名
+        "createdAt": "2019-06-12",  //生成日期
+        "bizType": "OPEN_ACCOUNT", //业务类型  
+        "taskStatus": "WAIT_INPUT", //审核状态
+        "lastOpr": "张三",   //审核人
+        "lastOprTime": "2019-06-12", //审核时间
     },
+    {
+        "taskId": "233333",  //作业流水号
+        "userId": "233333333",
+        "partyNo": "2019061120001",   //客户号
+        "userName": "客户",   //客户姓名
+        "createdAt": "2019-06-12",  //生成日期
+        "bizType": "OPEN_ACCOUNT", //业务类型  
+        "taskStatus": "WAIT_INPUT", //审核状态
+        "lastOpr": "张三",   //审核人
+        "lastOprTime": "2019-06-12", //审核时间
+    }, 
 ];
 
 function List() {
-    return <Table columns={columns} dataSource={data} />;
+    return <PageHeaderWrapper title={"审核列表"}>
+        <Table columns={columns} dataSource={data} />;
+    </PageHeaderWrapper>
 }
 
-export default List;
+export default List
