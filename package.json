@@ -26,9 +26,11 @@
         "prettier": "node ./scripts/prettier.js"
     },
     "dependencies": {
+        "@alifd/next": "^1.17.12",
         "@antv/data-set": "^0.10.1",
         "@babel/runtime": "^7.3.1",
-        "antd": "^3.13.0",
+        "@icedesign/container": "^1.0.4",
+        "antd": "^3.23.5",
         "bizcharts": "^3.4.3",
         "bizcharts-plugin-slider": "^2.1.1-beta.1",
         "bpmn-js": "^5.0.3",
@@ -45,11 +47,11 @@
         "moment": "^2.24.0",
         "numeral": "^2.0.6",
         "nzh": "^1.0.4",
-        "omit.js": "^1.0.0",
+        "omit.js": "^1.0.2",
         "path-to-regexp": "^3.0.0",
         "prop-types": "^15.6.2",
-        "qs": "^6.6.0",
-        "rc-animate": "^2.6.0",
+        "qs": "^6.9.0",
+        "rc-animate": "^2.10.0",
         "react": "^16.7.0",
         "react-container-query": "^0.11.0",
         "react-copy-to-clipboard": "^5.0.1",
@@ -127,10 +129,5 @@
         "src/**/*.less",
         "config/**/*.js*",
         "scripts/**/*.js"
-    ],
-    "husky": {
-        "hooks": {
-            "pre-commit": "npm run lint-staged"
-        }
-    }
+    ]
 }

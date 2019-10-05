@@ -1,5 +1,5 @@
-import { Table, Divider, Tag } from 'antd';
-
+import {Table, Divider, Tag} from 'antd';
+import React, {Component} from 'react';
 import PageHeaderWrapper from '@/components/PageHeaderWrapper';
 const columns = [
     {
@@ -22,6 +22,11 @@ const columns = [
         title: '核查类型',
         key: 'bizType',
         dataIndex: 'bizType',
+    },
+    {
+        title: '核查状态',
+        key: 'taskStatus',
+        dataIndex: 'taskStatus',
     },
     {
         title: '生成时间',
@@ -51,78 +56,86 @@ const columns = [
 
 const data = [
     {
-        "taskId": "233333",  //作业流水号
-        "userId": "233333333",
-        "partyNo": "2019061120001",   //客户号
-        "userName": "客户",   //客户姓名
-        "createdAt": "2019-06-12",  //生成日期
-        "bizType": "OPEN_ACCOUNT", //业务类型  
-        "taskStatus": "WAIT_INPUT", //审核状态
-        "lastOpr": "张三",   //审核人
-        "lastOprTime": "2019-06-12", //审核时间
-    },         
+        taskId: '233333', //作业流水号
+        userId: '233333333',
+        partyNo: '2019061120001', //客户号
+        userName: '客户', //客户姓名
+        createdAt: '2019-06-12', //生成日期
+        bizType: 'OPEN_ACCOUNT', //业务类型
+        taskStatus: 'WAIT_INPUT', //审核状态
+        lastOpr: '张三', //审核人
+        lastOprTime: '2019-06-12', //审核时间
+    },
     {
-        "taskId": "233333",  //作业流水号
-        "userId": "233333333",
-        "partyNo": "2019061120001",   //客户号
-        "userName": "客户",   //客户姓名
-        "createdAt": "2019-06-12",  //生成日期
-        "bizType": "OPEN_ACCOUNT", //业务类型  
-        "taskStatus": "WAIT_INPUT", //审核状态
-        "lastOpr": "张三",   //审核人
-        "lastOprTime": "2019-06-12", //审核时间
+        taskId: '233333', //作业流水号
+        userId: '233333333',
+        partyNo: '2019061120001', //客户号
+        userName: '客户', //客户姓名
+        createdAt: '2019-06-12', //生成日期
+        bizType: 'OPEN_ACCOUNT', //业务类型
+        taskStatus: 'WAIT_INPUT', //审核状态
+        lastOpr: '张三', //审核人
+        lastOprTime: '2019-06-12', //审核时间
     },
 
     {
-        "taskId": "233333",  //作业流水号
-        "userId": "233333333",
-        "partyNo": "2019061120001",   //客户号
-        "userName": "客户",   //客户姓名
-        "createdAt": "2019-06-12",  //生成日期
-        "bizType": "OPEN_ACCOUNT", //业务类型  
-        "taskStatus": "WAIT_INPUT", //审核状态
-        "lastOpr": "张三",   //审核人
-        "lastOprTime": "2019-06-12", //审核时间
+        taskId: '233333', //作业流水号
+        userId: '233333333',
+        partyNo: '2019061120001', //客户号
+        userName: '客户', //客户姓名
+        createdAt: '2019-06-12', //生成日期
+        bizType: 'OPEN_ACCOUNT', //业务类型
+        taskStatus: 'WAIT_INPUT', //审核状态
+        lastOpr: '张三', //审核人
+        lastOprTime: '2019-06-12', //审核时间
     },
     {
-        "taskId": "233333",  //作业流水号
-        "userId": "233333333",
-        "partyNo": "2019061120001",   //客户号
-        "userName": "客户",   //客户姓名
-        "createdAt": "2019-06-12",  //生成日期
-        "bizType": "OPEN_ACCOUNT", //业务类型  
-        "taskStatus": "WAIT_INPUT", //审核状态
-        "lastOpr": "张三",   //审核人
-        "lastOprTime": "2019-06-12", //审核时间
+        taskId: '233333', //作业流水号
+        userId: '233333333',
+        partyNo: '2019061120001', //客户号
+        userName: '客户', //客户姓名
+        createdAt: '2019-06-12', //生成日期
+        bizType: 'OPEN_ACCOUNT', //业务类型
+        taskStatus: 'WAIT_INPUT', //审核状态
+        lastOpr: '张三', //审核人
+        lastOprTime: '2019-06-12', //审核时间
     },
     {
-        "taskId": "233333",  //作业流水号
-        "userId": "233333333",
-        "partyNo": "2019061120001",   //客户号
-        "userName": "客户",   //客户姓名
-        "createdAt": "2019-06-12",  //生成日期
-        "bizType": "OPEN_ACCOUNT", //业务类型  
-        "taskStatus": "WAIT_INPUT", //审核状态
-        "lastOpr": "张三",   //审核人
-        "lastOprTime": "2019-06-12", //审核时间
+        taskId: '233333', //作业流水号
+        userId: '233333333',
+        partyNo: '2019061120001', //客户号
+        userName: '客户', //客户姓名
+        createdAt: '2019-06-12', //生成日期
+        bizType: 'OPEN_ACCOUNT', //业务类型
+        taskStatus: 'WAIT_INPUT', //审核状态
+        lastOpr: '张三', //审核人
+        lastOprTime: '2019-06-12', //审核时间
     },
     {
-        "taskId": "233333",  //作业流水号
-        "userId": "233333333",
-        "partyNo": "2019061120001",   //客户号
-        "userName": "客户",   //客户姓名
-        "createdAt": "2019-06-12",  //生成日期
-        "bizType": "OPEN_ACCOUNT", //业务类型  
-        "taskStatus": "WAIT_INPUT", //审核状态
-        "lastOpr": "张三",   //审核人
-        "lastOprTime": "2019-06-12", //审核时间
-    }, 
+        taskId: '233333', //作业流水号
+        userId: '233333333',
+        partyNo: '2019061120001', //客户号
+        userName: '客户', //客户姓名
+        createdAt: '2019-06-12', //生成日期
+        bizType: 'OPEN_ACCOUNT', //业务类型
+        taskStatus: 'WAIT_INPUT', //审核状态
+        lastOpr: '张三', //审核人
+        lastOprTime: '2019-06-12', //审核时间
+    },
 ];
 
-function List() {
-    return <PageHeaderWrapper title={"审核列表"}>
-        <Table columns={columns} dataSource={data} />;
-    </PageHeaderWrapper>
+class List extends Component {
+    constructor(props) {
+        super(props);
+    }
+
+    render() {
+        return (
+            <PageHeaderWrapper title={'审核列表'}>
+                <Table columns={columns} dataSource={data} />;
+            </PageHeaderWrapper>
+        );
+    }
 }
 
-export default List
+export default List;
