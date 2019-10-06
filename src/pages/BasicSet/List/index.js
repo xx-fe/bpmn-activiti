@@ -1,12 +1,16 @@
-import {Table, Divider, Tag} from 'antd';
-import React, {Component} from 'react';
+import { Table, Divider, Tag } from 'antd';
+import { Link } from 'react-router-dom'
+import React, { Component } from 'react';
 import PageHeaderWrapper from '@/components/PageHeaderWrapper';
+import { getList } from '@/services/MVPAPI'
 const columns = [
     {
         title: '作业流水号',
         dataIndex: 'taskId',
         key: 'taskId',
-        render: text => <a>{text}</a>,
+        render: (text, record) => <a>
+            <Link to={`/basicSet/pcInput?taskId=${record.taskId}&bizType=${record.bizType}&currentAuditStatus=${record.taskStatus}`}> {text} </Link>
+        </a>
     },
     {
         title: 'Paty_No',
@@ -127,12 +131,28 @@ const data = [
 class List extends Component {
     constructor(props) {
         super(props);
+        this.state = { data: [] }
     }
+
+    componentDidMount() {
+        this.setState({ data })
+        return
+
+        getList().then(() => {
+            if (res.data && res.res_code === "0") {
+                this.setState({
+                    data: res.data
+                })
+            }
+        })
+    }
+
+
 
     render() {
         return (
             <PageHeaderWrapper title={'审核列表'}>
-                <Table columns={columns} dataSource={data} />;
+                <Table columns={columns} dataSource={this.state.data} />;
             </PageHeaderWrapper>
         );
     }

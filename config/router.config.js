@@ -5,8 +5,8 @@ export default [
         path: '/user',
         component: '../layouts/UserLayout',
         routes: [
-            {path: '/user', redirect: '/user/login'},
-            {path: '/user/login', name: 'login', component: './User/Login'},
+            { path: '/user', redirect: '/user/login' },
+            { path: '/user/login', name: 'login', component: './User/Login' },
             {
                 component: '404',
             },
@@ -18,7 +18,7 @@ export default [
         component: '../layouts/BasicLayout',
         Routes: ['src/pages/Authorized'],
         routes: [
-            {path: '/', redirect: '/basicSet/processManage'},
+            { path: '/', redirect: '/basicSet/processManage' },
             // 基础设置
             {
                 name: 'basicSet',
@@ -43,17 +43,17 @@ export default [
                     },
                     {
                         path: '/basicSet/phoneInput',
-                        name: 'phoneInput', // 流程跟踪
+                        name: 'phoneInput', // 模拟c 端录入
                         component: './BasicSet/PhoneInput/index',
                     },
                     {
                         path: '/basicSet/pcInput',
-                        name: 'pcInput', // 流程跟踪
+                        name: 'pcInput', // 模拟 be 审核
                         component: './BasicSet/PcInput/index',
                     },
                     {
                         path: '/basicSet/list',
-                        name: 'list', // 流程跟踪
+                        name: 'list', // 模拟审核列表
                         component: './BasicSet/List/index',
                     },
                 ],

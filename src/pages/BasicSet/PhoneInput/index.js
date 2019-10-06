@@ -2,6 +2,7 @@ import React from 'react';
 import 'antd/dist/antd.css';
 import { Form, Input, Button, Checkbox, Select } from 'antd';
 import PageHeaderWrapper from '@/components/PageHeaderWrapper';
+import { SubmitUserInput } from '@/services/MVPAPI'
 const { Option } = Select;
 const formItemLayout = {
     labelCol: { span: 4 },
@@ -20,6 +21,7 @@ class DynamicRule extends React.Component {
         this.props.form.validateFields(err => {
             if (!err) {
                 console.info('success');
+                SubmitUserInput({  })
             }
         });
     };
