@@ -1,6 +1,7 @@
 import React, {Component, Fragment} from 'react';
 import BpmnViewer from 'bpmn-js';
-import {diagramXML} from './xml';
+// import {diagramXML} from './xml';
+import {diagramXML} from './process.bpmn20.js';
 import './Bpmn.css';
 
 class Bpmn extends Component {
@@ -26,7 +27,7 @@ class Bpmn extends Component {
             let events = [
                 'element.hover',
                 // 'element.out',
-                'element.click',
+                // 'element.click',
                 // 'element.dblclick',
                 // 'element.mousedown',
                 // 'element.mouseup'
@@ -35,7 +36,12 @@ class Bpmn extends Component {
                 eventBus.on(event, function(e) {
                     // e.element = the model element
                     // e.gfx = the graphical element
-                    console.log(event, 'on', e.element.id);
+                    let obj;
+                    const filterArr = arr.filter(li=> li.id == e.element.id)
+                    if(filterArr.length >= 1){
+                       console.log(filterArr)
+                    }
+                    // console.log(event, 'on', e.element,e);
                     callback(e.element.id); // 流程图点击回调
                 });
             });
@@ -53,6 +59,17 @@ class Bpmn extends Component {
                 bjsIoLogo.removeChild(bjsIoLogo.firstChild);
             }
         });
+    }
+
+     getMousePos=(event)=> {
+        var e = event || window.event;
+        var scrollX = document.documentElement.scrollLeft || document.body.scrollLeft;
+        var scrollY = document.documentElement.scrollTop || document.body.scrollTop;
+
+        console.log(e,scrollX,scrollY)
+        var x = e.pageX || e.clientX + scrollX;
+        var y = e.pageY || e.clientY + scrollY;
+        return { "x": x, "y": y };
     }
 
     render() {
@@ -103,3 +120,10 @@ class Bpmn extends Component {
 }
 
 export default Bpmn;
+
+
+
+const arr = [{
+    id:"sid-E04AA6EC-89F2-4A00-84DD-AFDBD13737EF",
+    content:"张三同意这个操作，并开始鼓掌"
+}]
