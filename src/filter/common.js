@@ -286,6 +286,57 @@ export const IS_IDCARD_ADDRESS = [
 ];
 
 /**
+ * 格式化列表中的状态字段
+ * @param {string} value 
+ */
+export function bizTypeFilter(value) {
+    switch (value) {
+        case "OCR":
+            return ""
+        case "FACE":
+            return
+        case "CNEN":
+            return
+        case "ADDRESS":
+            return
+        case "OPEN_ACCOUNT_INFO":
+            return
+        case "OPEN_ACCOUNT_PURPOSE":
+            return "开户目的审核"
+        case "HIGH_RISK_RESIDENTIAL_ADDRESS":
+            return "高风险常住地址审核"
+        default:
+            return ""
+    }
+}
+
+
+/**
+ * 格式化列表中数据的场景类型
+ * @param {string} value 
+ */
+export function statusFilter(value) {
+    switch (value) {
+        case "L1_WAIT_AUDIT":
+            return "L1待初审"
+        case "L1_WAIT_AUDIT_DONE":
+            return "L1初审完成"
+        case "L1_WAIT_REVIEW":
+            return "L1待复审"
+        case "L1_WAIT_REVIEW_DONE":
+            return "L1复审完成"
+        case "L2_WAIT_AUDIT_DONE":
+            return "L2审核完成"
+        case "COMPLIANCE_AUDIT":
+            return "待合规官审核"
+        case "FINISH":
+            return "已完成"
+        default:
+            return ""
+    }
+}
+
+/**
  * 格式化金额
  * @param {number|string} value
  */

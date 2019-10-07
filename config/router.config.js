@@ -47,15 +47,16 @@ export default [
                         component: './BasicSet/PhoneInput/index',
                     },
                     {
-                        path: '/basicSet/pcInput',
-                        name: 'pcInput', // 模拟 be 审核
-                        component: './BasicSet/PcInput/index',
-                    },
-                    {
                         path: '/basicSet/list',
                         name: 'list', // 模拟审核列表
                         component: './BasicSet/List/index',
                     },
+                    {
+                        path: '/basicSet/pcInput',
+                        name: 'pcInput', // 模拟 be 审核
+                        component: './BasicSet/PcInput/index',
+                    },
+
                 ],
             },
             {

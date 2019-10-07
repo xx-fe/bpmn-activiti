@@ -1,4 +1,5 @@
 import request from '@/utils/MVPrepuest';
+import { async } from 'q';
 
 // 客户信息提交
 export async function SubmitUserInput(data) {
@@ -26,7 +27,7 @@ export async function getList(data) {
 export async function getDetail(data) {
     return request({
         url: '/hk/compliance/task-detail',
-        method: 'get',
+        method: 'post',
         data,
     });
 }
@@ -42,3 +43,21 @@ export async function submitCheckData(data) {
     });
 }
 //http://localhost:8080/activiti-demo//hk/compliance/task-submit
+
+
+// 历史记录:
+export async function historyList(data) {
+    return request({
+        url: '/task/listAction',
+        method: 'post',
+        data
+    })
+}
+
+// 拿到详情图片
+export async function gethistoryImg(id) {
+    return request({
+        url: `/test/viewProcessImg?instanceId=${id}`,
+        method: 'get'
+    })
+}

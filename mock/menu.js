@@ -20,12 +20,12 @@ export default {
                             path: '/basicSet/phoneInput',
                         },
                         {
-                            name: 'Be审核',
-                            path: '/basicSet/pcInput',
-                        },
-                        {
                             name: 'Be待办列表',
                             path: '/basicSet/list',
+                        },
+                        {
+                            name: 'Be审核',
+                            path: '/basicSet/pcInput',
                         },
                     ],
                 },

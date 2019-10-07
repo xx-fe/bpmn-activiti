@@ -1,6 +1,7 @@
 import React from 'react';
 import 'antd/dist/antd.css';
-import { Form, Input, Button, Checkbox, Select } from 'antd';
+import { Form, Input, Button, Checkbox, Select, Message } from 'antd';
+import router from 'umi/router';
 import PageHeaderWrapper from '@/components/PageHeaderWrapper';
 import { SubmitUserInput } from '@/services/MVPAPI'
 const { Option } = Select;
@@ -18,10 +19,26 @@ class DynamicRule extends React.Component {
     };
 
     check = () => {
-        this.props.form.validateFields(err => {
+        this.props.form.validateFields((err, values) => {
             if (!err) {
-                console.info('success');
-                SubmitUserInput({  })
+                console.info(values);
+                Message.loading('提交中', 0)
+                SubmitUserInput({
+                    liveCountry: values.country,
+                    openAccountReasonType: values.motion,
+                    userId: "3182065"
+                }).then(res => {
+                    if (res.res_code == "0") {
+                        Message.destroy()
+                        Message.success("提交成功")
+                        router.push(`/basicSet/list`);
+                    }
+                }).catch(err => {
+                    console.log(err)
+                    Message.destroy()
+                    Message.error("处理异常")
+                })
+
             }
         });
     };

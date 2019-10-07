@@ -1,7 +1,8 @@
 import axios from 'axios';
 import serialize from './serialize';
 
-const luRootUrl = 'http://localhost:8000';//待定
+const luRootUrl = 'http://localhost:8000/api';//待定
+//http://39.105.185.29:8080/activiti-demo/hk/compliance/task-detail
 
 const createRequest = function (options) {
     let request = {};

@@ -46,7 +46,7 @@ export default class Customer extends Component {
     const { idPicUrl } = this.state;
     return (
 
-      <Card>
+      <Card style={{ margin: "10px 0" }}>
 
         <Row getters="24">
           <Col l="6">
@@ -178,7 +178,7 @@ export default class Customer extends Component {
             </div>
           </Col>
         </Row>
-        {customerInfo &&
+        {customerInfo && customerInfo.usedNameResp &&
           customerInfo.usedNameResp.map((item, index) => {
             return (
               <Row getters="24" key={index}>
@@ -231,322 +231,15 @@ export default class Customer extends Component {
       </Card>
     );
   };
-  renderHKUser = customerInfo => {
-    const { idPicUrl } = this.state;
-    return (
-      <Card>
-        <Row getters="24">
-          <Col l="6">
-            <div style={styles.colItem}>
-              <span style={styles.label}>客户ID : </span>
-              <span>{customerInfo && customerInfo.userId}</span>
-            </div>
-          </Col>
-          <Col l="6">
-            <div style={styles.colItem}>
-              <span style={styles.label}>手机号码 : </span>
-              <span style={styles.label}>
-                {customerInfo && customerInfo.mobileNo}
-              </span>
-            </div>
-          </Col>
-          <Col l="6">
-            <div style={styles.colItem}>
-              <span style={styles.label}>身份证照片 : </span>
-              {customerInfo && customerInfo.idFrontPicUrl ? (
-                <div
-                  style={styles.checkView}
-                  onClick={() =>
-                    this.viewCard(customerInfo && customerInfo.idFrontPicUrl)
-                  }
-                >
-                  <ImageViewer options={{ url: 'data-src' }}>
-                    <img
-                      className="img-viewer"
-                      src=""
-                      data-content="个人信息页>"
-                      alt=""
-                      data-src={idPicUrl}
-                    />
-                  </ImageViewer>
-                </div>
-              ) : null}
-            </div>
-          </Col>
-          <Col l="6" />
-        </Row>
-        <Row getters="24">
-          <Col l="6">
-            <div style={styles.colItem}>
-              <span style={styles.label}>姓 : </span>
-              <span>{customerInfo && customerInfo.surname}</span>
-            </div>
-          </Col>
-          <Col l="6">
-            <div style={styles.colItem}>
-              <span style={styles.label}>名 : </span>
-              <span>{customerInfo && customerInfo.givenName}</span>
-            </div>
-          </Col>
-          <Col l="6">
-            <div style={styles.colItem}>
-              <span style={styles.label}>身份证件号码 : </span>
-              <span style={styles.label}>{customerInfo && customerInfo.idNo}</span>
-            </div>
-          </Col>
-          <Col l="6">
-            <div style={styles.colItem}>
-              <span style={styles.label}>出生日期 : </span>
-              <span style={styles.label}>
-                {customerInfo && customerInfo.birthDate}
-              </span>
-            </div>
-          </Col>
-        </Row>
-        <Row getters="24">
-          <Col l="6">
-            <div style={styles.colItem}>
-              <span style={styles.label}>Last Name : </span>
-              <span>{customerInfo && customerInfo.lastName}</span>
-            </div>
-          </Col>
-          <Col l="6">
-            <div style={styles.colItem}>
-              <span style={styles.label}>Middle Name : </span>
-              <span>{customerInfo && customerInfo.middleName}</span>
-            </div>
-          </Col>
-          <Col l="6">
-            <div style={styles.colItem}>
-              <span style={styles.label}>First Name : </span>
-              <span>{customerInfo && customerInfo.firstName}</span>
-            </div>
-          </Col>
-          <Col l="6">
-            <div style={styles.colItem}>
-              <span style={styles.label}>性别 : </span>
-              {customerInfo && customerInfo.sex ? (
-                <span>{SEX.find(v => v.code === customerInfo.sex).desc}</span>
-              ) : null}
-            </div>
-          </Col>
-        </Row>
-        <Row getters="24">
-          <Col l="6">
-            <div style={styles.colItem}>
-              <span style={styles.label}>国籍 : </span>
-              <span>{customerInfo && customerInfo.nationality}</span>
-            </div>
-          </Col>
-          <Col l="6">
-            <div style={styles.colItem}>
-              <span style={styles.label}>出生国家/地区 : </span>
-              <span>{customerInfo && customerInfo.countryArea}</span>
-            </div>
-          </Col>
-        </Row>
-      </Card>
-    );
-  };
-  renderTemUser = customerInfo => {
-    const { idPicUrl } = this.state;
-    return (
-      <Card>
-        <Row getters="24">
-          <Col l="6">
-            <div style={styles.colItem}>
-              <span style={styles.label}>客户ID : </span>
-              <span>{customerInfo && customerInfo.userId}</span>
-            </div>
-          </Col>
-          <Col l="6">
-            <div style={styles.colItem}>
-              <span style={styles.label}>手机号码 : </span>
-              <span style={styles.label}>
-                {customerInfo && customerInfo.mobileNo}
-              </span>
-            </div>
-          </Col>
-          <Col l="6">
-            <div style={styles.colItem}>
-              <span style={styles.label}>身份证照片 : </span>
-              {customerInfo && customerInfo.idFrontPicUrl ? (
-                <div
-                  style={styles.checkView}
-                  onClick={() =>
-                    this.viewCard(customerInfo && customerInfo.idFrontPicUrl)
-                  }
-                >
-                  <ImageViewer options={{ url: 'data-src' }}>
-                    <img
-                      className="img-viewer"
-                      src=""
-                      data-content="个人信息页>"
-                      alt=""
-                      data-src={idPicUrl}
-                    />
-                  </ImageViewer>
-                </div>
-              ) : null}
-            </div>
-          </Col>
-          <Col l="6" />
-        </Row>
-        <Row getters="24">
-          <Col l="6">
-            <div style={styles.colItem}>
-              <span style={styles.label}>姓 : </span>
-              <span>{customerInfo && customerInfo.surname}</span>
-            </div>
-          </Col>
-          <Col l="6">
-            <div style={styles.colItem}>
-              <span style={styles.label}>名 : </span>
-              <span>{customerInfo && customerInfo.givenName}</span>
-            </div>
-          </Col>
-          <Col l="6">
-            <div style={styles.colItem}>
-              <span style={styles.label}>身份证件号码 : </span>
-              <span style={styles.label}>{customerInfo && customerInfo.idNo}</span>
-            </div>
-          </Col>
-          <Col l="6">
-            <div style={styles.colItem}>
-              <span style={styles.label}>证件到期日 : </span>
-              <span style={styles.label}>
-                {customerInfo && customerInfo.idExpireDate}
-              </span>
-            </div>
-          </Col>
-        </Row>
-        <Row getters="24">
-          <Col l="6">
-            <div style={styles.colItem}>
-              <span style={styles.label}>Last Name : </span>
-              <span>{customerInfo && customerInfo.lastName}</span>
-            </div>
-          </Col>
-          <Col l="6">
-            <div style={styles.colItem}>
-              <span style={styles.label}>Middle Name : </span>
-              <span>{customerInfo && customerInfo.middleName}</span>
-            </div>
-          </Col>
-          <Col l="6">
-            <div style={styles.colItem}>
-              <span style={styles.label}>First Name : </span>
-              <span>{customerInfo && customerInfo.firstName}</span>
-            </div>
-          </Col>
-          <Col l="6" />
-        </Row>
-        <Row getters="24">
-          <Col l="6">
-            <div style={styles.colItem}>
-              <span style={styles.label}>出生日期 : </span>
-              <span style={styles.label}>
-                {customerInfo && customerInfo.birthDate}
-              </span>
-            </div>
-          </Col>
-          <Col l="6">
-            <div style={styles.colItem}>
-              <span style={styles.label}>性别 : </span>
-              {customerInfo && customerInfo.sex ? (
-                <span>{SEX.find(v => v.code === customerInfo.sex).desc}</span>
-              ) : null}
-            </div>
-          </Col>
-          <Col l="6">
-            <div style={styles.colItem}>
-              <span style={styles.label}>往来港澳通行证号码 : </span>
-              <span style={styles.label}>
-                {customerInfo && customerInfo.idAddress}
-              </span>
-            </div>
-          </Col>
-          <Col l="6" />
-        </Row>
-        <Row getters="24">
-          <Col l="6">
-            <div style={styles.colItem}>
-              <span style={styles.label}>国籍 : </span>
-              <span>{customerInfo && customerInfo.nationality}</span>
-            </div>
-          </Col>
-          <Col l="6">
-            <div style={styles.colItem}>
-              <span style={styles.label}>出生国家/地区 : </span>
-              <span>{customerInfo && customerInfo.countryArea}</span>
-            </div>
-          </Col>
-          <Col l="6">
-            <div style={styles.colItem}>
-              <span style={styles.label}>往来港澳通行证照片 : </span>
-              {customerInfo && customerInfo.eepMainPicUrl ? (
-                <div
-                  style={styles.checkView}
-                  onClick={() =>
-                    this.viewCard(customerInfo && customerInfo.eepMainPicUrl)
-                  }
-                >
-                  <ImageViewer options={{ url: 'data-src' }}>
-                    <img
-                      className="img-viewer"
-                      src=""
-                      data-content="个人信息页>"
-                      alt=""
-                      data-src={idPicUrl}
-                    />
-                  </ImageViewer>
-                </div>
-              ) : null}
-            </div>
-          </Col>
-          <Col l="6">
-            <div style={styles.colItem}>
-              <span style={styles.label}> </span>
-              {customerInfo && customerInfo.eepVisaPicUrl ? (
-                <div
-                  style={styles.checkView}
-                  onClick={() =>
-                    this.viewCard(customerInfo && customerInfo.eepVisaPicUrl)
-                  }
-                >
-                  <ImageViewer options={{ url: 'data-src' }}>
-                    <img
-                      className="img-viewer"
-                      src=""
-                      data-content="签注信息面>"
-                      alt=""
-                      data-src={idPicUrl}
-                    />
-                  </ImageViewer>
-                </div>
-              ) : null}
-            </div>
-          </Col>
-        </Row>
-      </Card>
-    );
-  };
+
   render() {
     const { idPicUrl } = this.state;
     const { customerInfo } = this.props;
     return (
       <div className="customer">
-        {customerInfo && customerInfo.idType === '0'
-          ? this.renderLandUser(customerInfo)
-          : null}
-        {customerInfo && customerInfo.idType === '1'
-          ? this.renderHKUser(customerInfo)
-          : null}
-        {customerInfo && customerInfo.idType === '2'
-          ? this.renderTemUser(customerInfo)
-          : null}
+        {customerInfo && this.renderLandUser(customerInfo)}
 
-        <Card>
+        <Card style={{ margin: "10px 0" }}>
           <Row getters="24">
             <Col l="6">
               <div style={styles.colItem}>
@@ -613,7 +306,7 @@ export default class Customer extends Component {
           </Row>
         </Card>
 
-        <Card>
+        <Card style={{ margin: "10px 0" }}>
           <Row getters="24">
             <Col l="6">
               <div style={styles.colItem}>
@@ -636,7 +329,7 @@ export default class Customer extends Component {
             <Col l="6">
               <div style={styles.colItem}>
                 <span style={styles.label}>年收入 : </span>
-                <span>{customerInfo && formatAmount(customerInfo.netIncome)}</span>
+                <span>{customerInfo && customerInfo.netIncome && formatAmount(customerInfo.netIncome)}</span>
               </div>
             </Col>
           </Row>
@@ -644,7 +337,7 @@ export default class Customer extends Component {
 
 
         {customerInfo && customerInfo.taxInfoResp &&
-          <Card> {customerInfo.taxInfoResp.map((item, index) => {
+          <Card  style={{ margin: "10px 0" }}> {customerInfo.taxInfoResp.map((item, index) => {
             return (
               <Row getters="24" key={index}>
                 <Col l="6">
@@ -663,7 +356,7 @@ export default class Customer extends Component {
             );
           })}</Card>}
 
-        <Card>
+        <Card  style={{ margin: "10px 0" }}>
           <Row getters="24">
             <Col l="6">
               <div style={styles.colItem}>

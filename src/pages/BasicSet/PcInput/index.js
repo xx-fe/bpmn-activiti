@@ -1,105 +1,140 @@
 import React, { Component } from 'react';
 import 'antd/dist/antd.css';
 import {
+    Card,
     Form,
     Input,
-    Tooltip,
-    Icon,
-    Cascader,
-    Select,
-    Row,
-    Col,
-    Checkbox,
     Button,
-    AutoComplete,
+    Message
 } from 'antd';
+
+import { Loading } from '@alifd/next';
 import PageHeaderWrapper from '@/components/PageHeaderWrapper';
 import Customer from '@/components/Customer';
+import { getDetail, submitCheckData, gethistoryImg, historyList } from '@/services/MVPAPI'
+import { async } from 'q';
 class RegistrationForm extends Component {
     constructor(props) {
         super(props);
 
         this.state = {
-            customerInfo: customerInfo
+            customerInfo: {},
+            Loading: false
         };
     }
 
 
-    componentDidMount() {
-
-        const search = location.search;
-        const param = this.getParam(search);
-        console.log(param, search)
-        this.getDetail()
+    async componentDidMount() {
+        console.log(localStorage.getItem('taskId'))
+        const { taskId, bizType, taskStatus, userId } = localStorage
+        this.setState({ taskId, bizType, taskStatus, userId })
+        await this.getDetail({ taskId, bizType, taskStatus })
+        this.getHistoryImg()
+        this.getHistoryList(taskId)
     }
 
-
-    // 获取地址栏参数
-    getParam = param => {
-        const obj = {};
-        param
-            .substr(1)
-            .split('&')
-            .map(item => {
-                const key = item.split('=')[0];
-                const val = item.split('=')[1];
-                obj[key] = val;
-            });
-        return obj;
-    };
-
-
-    getDetail = () => {
+    getDetail = async (param) => {
+        await getDetail({ ...param }).then(res => {
+            if (res.data && res.res_code == "0") {
+                this.setState({ customerInfo: res.data.customerInfo })
+            }
+        })
     }
 
-    submit = e => {
-        e.preventDefault();
+    getHistoryImg = () => {
+        const { customerInfo } = this.state;
+        console.log(customerInfo)
+        gethistoryImg(customerInfo.processInstanceId).then(res => {
+            if (res.data && res.res_code == "0")
+                this.setState({ historyImg: res.data })
+        })
+    }
+
+    getHistoryList = taskId => {
+        historyList({ taskId }).then(res => {
+
+        })
+    }
+
+    submit = result => {
         this.props.form.validateFieldsAndScroll((err, values) => {
             if (!err) {
-                console.log('Received values of form: ', values);
+                const { taskId, bizType, taskStatus } = this.state
+                Message.loading('提交中', 0)
+                submitCheckData({
+                    taskId,
+                    bizType,
+                    auditResult: result,
+                    remark: values.remark
+                }).then(res => {
+                    if (res.res_code == "0") {
+                        Message.destroy()
+                        Message.success("提交成功")
+                    }
+                }).catch(err => {
+                    Message.destroy()
+                    Message.error("处理异常")
+                })
             }
         });
     };
 
     render() {
         const { getFieldDecorator } = this.props.form;
-        const { customerInfo } = this.state;
+        const { customerInfo, historyImg } = this.state;
 
         const formItemLayout = {
             labelCol: {
-                span: 2,
+                span: 4,
             },
             wrapperCol: {
-                span: 10,
+                span: 20,
             },
         };
 
         return (
             <PageHeaderWrapper title={'审核详情'}>
-                <Customer customerInfo={customerInfo}></Customer>
-                <Form {...formItemLayout}>
-                    <Form.Item label="审核意见">
-                        {getFieldDecorator('email', {
-                            rules: [
-                                {
-                                    type: 'email',
-                                    message: 'The input is not valid E-mail!',
-                                },
-                                {
-                                    required: true,
-                                    message: 'Please input your E-mail!',
-                                },
-                            ],
-                        })(<Input.TextArea />)}
-                    </Form.Item>
-                </Form>
-                <div>
-                    <Button>同意</Button>
-                    <Button>驳回</Button>
-                </div>
+                <Loading size="large" visible={this.state.Loading}>
+                    <Customer customerInfo={customerInfo}></Customer>
+                    <Card style={{ margin: "10px 0" }}>
+                        <Form {...formItemLayout}>
+                            <Form.Item label="审核意见">
+                                {getFieldDecorator('remark', {
+                                    rules: [
+                                        {
+                                            required: true,
+                                            message: '请输入您的审核意见',
+                                        },
+                                    ],
+                                })(<Input.TextArea rows={4} />)}
+                            </Form.Item>
+                        </Form>
+                        <div style={{
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center'
+                        }}>
+                            <Button style={{
+                                margin: 10
+                            }} type="primary" onClick={() => {
+                                this.submit("PASS")
+                            }}>同意</Button>
+                            <Button style={{
+                                margin: 10
+                            }} type="danger" onClick={() => {
+                                this.submit("NO_PASS")
+                            }}>驳回</Button>
+                        </div>
+                    </Card>
+                    <Card style={{ margin: "10px 0" }}>
+                        <div>拿到的任务流图片</div>
+                        <div>
+                            <img src={historyImg} />
+                        </div>
+                        <div>历史记录</div>
+                    </Card>
+                </Loading>
 
-                <div>拿到的任务流图片</div>
-                <div>历史记录</div>
             </PageHeaderWrapper>
         );
     }
