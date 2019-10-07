@@ -16,7 +16,9 @@ const columns = [
             storage.taskId = record.taskId
             storage.bizType = record.bizType
             storage.currentAuditStatus = record.status
-            storage.userId = record.userId
+            storage.userId = 3182065 // record.userId  先全部写死
+            storage.detailTitle = bizTypeFilter(record.bizType)
+            storage.currentState = statusFilter(record.taskStatus)
             router.push(`/basicSet/pcInput`);
         }}>
             {text}

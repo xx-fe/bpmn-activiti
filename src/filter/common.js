@@ -300,7 +300,7 @@ export function bizTypeFilter(value) {
         case "ADDRESS":
             return
         case "OPEN_ACCOUNT_INFO":
-            return
+            return "运营开户目的审核"
         case "OPEN_ACCOUNT_PURPOSE":
             return "开户目的审核"
         case "HIGH_RISK_RESIDENTIAL_ADDRESS":

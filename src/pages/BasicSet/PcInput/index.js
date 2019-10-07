@@ -19,16 +19,17 @@ class RegistrationForm extends Component {
 
         this.state = {
             customerInfo: {},
-            Loading: false
+            Loading: false,
+            detailTitle: ""   //当前的场景
         };
     }
 
 
     async componentDidMount() {
         console.log(localStorage.getItem('taskId'))
-        const { taskId, bizType, taskStatus, userId } = localStorage
-        this.setState({ taskId, bizType, taskStatus, userId })
-        await this.getDetail({ taskId, bizType, taskStatus })
+        const { taskId, bizType, taskStatus, userId, detailTitle, currentState } = localStorage
+        this.setState({ taskId, bizType, taskStatus, userId, detailTitle, currentState })
+        await this.getDetail({ taskId, bizType, taskStatus, userId })
         this.getHistoryImg()
         this.getHistoryList(taskId)
     }
@@ -59,11 +60,12 @@ class RegistrationForm extends Component {
     submit = result => {
         this.props.form.validateFieldsAndScroll((err, values) => {
             if (!err) {
-                const { taskId, bizType, taskStatus } = this.state
+                const { taskId, bizType, taskStatus, userId } = this.state
                 Message.loading('提交中', 0)
                 submitCheckData({
                     taskId,
                     bizType,
+                    userId,
                     auditResult: result,
                     remark: values.remark
                 }).then(res => {
@@ -81,7 +83,7 @@ class RegistrationForm extends Component {
 
     render() {
         const { getFieldDecorator } = this.props.form;
-        const { customerInfo, historyImg } = this.state;
+        const { customerInfo, historyImg, detailTitle, currentState } = this.state;
 
         const formItemLayout = {
             labelCol: {
@@ -93,7 +95,11 @@ class RegistrationForm extends Component {
         };
 
         return (
-            <PageHeaderWrapper title={'审核详情'}>
+            <PageHeaderWrapper title={<div>
+                <span style={{ marginRight: 40 }}>{detailTitle || ""} 审核详情</span>
+                ||
+                <span style={{ marginLeft: 40 }}>当前状态  {currentState || ""}</span>
+            </div>}>
                 <Loading size="large" visible={this.state.Loading}>
                     <Customer customerInfo={customerInfo}></Customer>
                     <Card style={{ margin: "10px 0" }}>
@@ -127,7 +133,7 @@ class RegistrationForm extends Component {
                         </div>
                     </Card>
                     <Card style={{ margin: "10px 0" }}>
-                        <div>拿到的任务流图片</div>
+                        <div>任务流图片</div>
                         <div>
                             <img src={historyImg} />
                         </div>
@@ -135,7 +141,7 @@ class RegistrationForm extends Component {
                     </Card>
                 </Loading>
 
-            </PageHeaderWrapper>
+            </PageHeaderWrapper >
         );
     }
 }

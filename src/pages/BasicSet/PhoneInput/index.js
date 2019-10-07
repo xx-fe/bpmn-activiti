@@ -1,6 +1,6 @@
 import React from 'react';
 import 'antd/dist/antd.css';
-import { Form, Input, Button, Checkbox, Select, Message } from 'antd';
+import { Form, Input, Button, Checkbox, Select, Message, Card } from 'antd';
 import router from 'umi/router';
 import PageHeaderWrapper from '@/components/PageHeaderWrapper';
 import { SubmitUserInput } from '@/services/MVPAPI'
@@ -58,46 +58,49 @@ class DynamicRule extends React.Component {
         const { getFieldDecorator } = this.props.form;
         return (
             <PageHeaderWrapper title={'修改资料'}>
-                <Form.Item {...formItemLayout} label="开户目的">
-                    {getFieldDecorator('motion', {
-                        rules: [
-                            {
-                                required: true,
-                                message: '请输入您的开户目的',
-                            },
-                        ],
-                    })(<Input placeholder="请输入您的开户目的" />)}
-                </Form.Item>
-                <Form.Item {...formItemLayout} label="居住国家">
-                    {getFieldDecorator('country', {
-                        rules: [
-                            {
-                                required: true,
-                                message: '请选择您的居住国家',
-                            },
-                        ],
-                    })(<Select
-                        showSearch
-                        style={{ width: 200 }}
-                        placeholder="请选择国家"
-                        optionFilterProp="children"
-                        filterOption={(input, option) =>
-                            option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-                        }
-                    >
-                        <Option value="Russia">俄罗斯</Option>
-                        <Option value="China">中国</Option>
-                        <Option value="England">英国</Option>
-                        <Option value="India">印度</Option>
-                    </Select>)}
-                </Form.Item>
+                <Card>
+                    <Form.Item {...formItemLayout} label="开户目的">
+                        {getFieldDecorator('motion', {
+                            rules: [
+                                {
+                                    required: true,
+                                    message: '请输入您的开户目的',
+                                },
+                            ],
+                        })(<Input placeholder="请输入您的开户目的" />)}
+                    </Form.Item>
+                    <Form.Item {...formItemLayout} label="居住国家">
+                        {getFieldDecorator('country', {
+                            rules: [
+                                {
+                                    required: true,
+                                    message: '请选择您的居住国家',
+                                },
+                            ],
+                        })(<Select
+                            showSearch
+                            style={{ width: 200 }}
+                            placeholder="请选择国家"
+                            optionFilterProp="children"
+                            filterOption={(input, option) =>
+                                option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                            }
+                        >
+                            <Option value="Russia">俄罗斯</Option>
+                            <Option value="China">中国</Option>
+                            <Option value="England">英国</Option>
+                            <Option value="India">印度</Option>
+                        </Select>)}
+                    </Form.Item>
 
 
-                <Form.Item {...formTailLayout}>
-                    <Button type="primary" onClick={this.check}>
-                        提交
+                    <Form.Item {...formTailLayout}>
+                        <Button type="primary" onClick={this.check}>
+                            提交
                     </Button>
-                </Form.Item>
+                    </Form.Item>
+                </Card>
+
             </PageHeaderWrapper>
         );
     }
