@@ -56,6 +56,12 @@ export default [
                         name: 'pcInput', // 模拟 be 审核
                         component: './BasicSet/PcInput/index',
                     },
+                    {
+                        name: '黑名单审核',
+                        path: '/basicSet/blackList',
+                        name: 'blackList', // 模拟 be 审核
+                        component: './BasicSet/BlackList/index',
+                    },
 
                 ],
             },

@@ -24,8 +24,12 @@ export default {
                             path: '/basicSet/list',
                         },
                         {
-                            name: 'Be审核',
+                            name: '开户资料审核',
                             path: '/basicSet/pcInput',
+                        },
+                        {
+                            name: '黑名单审核',
+                            path: '/basicSet/blackList',
                         },
                     ],
                 },

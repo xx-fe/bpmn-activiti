@@ -1,6 +1,6 @@
 import React from 'react';
 import 'antd/dist/antd.css';
-import { Form, Input, Button, Checkbox, Select, Message, Card } from 'antd';
+import { Form, Input, Button, Checkbox, Select, Message, Card, Radio } from 'antd';
 import router from 'umi/router';
 import PageHeaderWrapper from '@/components/PageHeaderWrapper';
 import { SubmitUserInput } from '@/services/MVPAPI'
@@ -67,7 +67,10 @@ class DynamicRule extends React.Component {
                                     message: '请输入您的开户目的',
                                 },
                             ],
-                        })(<Input placeholder="请输入您的开户目的" />)}
+                        })(<Radio.Group>
+                            <Radio value={1}>投资</Radio>
+                            <Radio value={2}>其他</Radio>
+                        </Radio.Group>)}
                     </Form.Item>
                     <Form.Item {...formItemLayout} label="居住国家">
                         {getFieldDecorator('country', {

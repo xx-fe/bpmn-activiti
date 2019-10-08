@@ -4,11 +4,10 @@ import { diagramXML } from './xml';
 import './Bpmn.css';
 
 class Bpmn extends Component {
-
     constructor(props) {
         super(props)
         this.state = {
-            x: 0, y: 0, display: false
+            x: 0, y: 0,
         }
     }
 
@@ -53,7 +52,8 @@ class Bpmn extends Component {
                     if (arr.length >= 1) {
                         that.setState({
                             x: clientX,
-                            y: clientY
+                            y: clientY,
+                            selectId: e.element.id,
                         })
                     }
                     callback(e.element.id); // 流程图点击回调
@@ -76,26 +76,24 @@ class Bpmn extends Component {
     }
 
     render() {
-        const { x, y, display } = this.state
+        const { x, y, selectId } = this.state
         const { data } = this.props;
-        return (
-            <Fragment>
-                <div id="canvas" style={{ height: '400px', position: "relative" }} >
+        const detailArr = t.filter(v => v.id === data.id)
 
-                </div>
-                {/* {data.id} */}
-                <div style={{
-                    position: "fixed",
-                    left: x,
-                    top: y - 200,
-                    width: 400,
-                    height: 200,
-                    border: "4px red solid",
-                    zIndex: 99
-                }}>
-                    {t
-                        .filter(v => v.id === data.id)
-                        .map((v, index) => {
+        return (
+            <div>
+                <div id="canvas">
+                    <div style={{
+                        position: "fixed",
+                        left: x,
+                        top: y - 200,
+                        width: 400,
+                        height: 200,
+                        border: "4px red solid",
+                        zIndex: 99,
+                        display: detailArr.length >= 1 ? "block" : "none"
+                    }}>
+                        {detailArr.map((v, index) => {
                             return (
                                 <ul key={index} >
                                     <li>
@@ -105,8 +103,26 @@ class Bpmn extends Component {
                                 </ul>
                             );
                         })}
+                    </div>
                 </div>
-            </Fragment>
+                {/* {data.id} */}
+                <div>
+                    {t.map((v, index) => {
+                        return (
+                            <ul style={{
+                                width: 600,
+                                border: `2px red ${detailArr.length >= 1 && (v.id == selectId) ? "solid" : ""}`,
+                                transition: "0.5s all ease"
+                            }} key={index} >
+                                <li >
+                                    {v.time}&nbsp;&nbsp;&nbsp;&nbsp;{v.user}&nbsp;&nbsp;&nbsp;&nbsp;
+                                    {v.mark}
+                                </li>
+                            </ul>
+                        );
+                    })}
+                </div>
+            </div>
         );
     }
 }
