@@ -135,7 +135,7 @@ class RegistrationForm extends Component {
                     <Card style={{ margin: "10px 0" }}>
                         <div>任务流图片</div>
                         <div>
-                            <img src={historyImg} />
+                            <img src={`data:image/png;base64,${historyImg}`} />
                         </div>
                         <div>历史记录</div>
                     </Card>

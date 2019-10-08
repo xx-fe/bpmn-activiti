@@ -51,7 +51,7 @@ export default function (options) {
 
     delete options.param;
     return request(options).then(res => {
-        if (res.data && (res.data.res_code === '0' || res.data.res_code === '0000')) {
+        if (res.data && (res.data.res_code == '0' || res.data.res_code == '0000')) {
             return res && res.data;
         }
         throw res.data || { res_msg: '' };
