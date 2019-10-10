@@ -35,7 +35,7 @@ class RegistrationForm extends Component {
         this.setState({ taskId, bizType, taskStatus, userId, detailTitle, currentState })
         await this.getDetail({ taskId, bizType, taskStatus, userId })
         this.getHistoryImg()
-        this.getHistoryList(taskId)
+        this.getHistoryList()
     }
 
     getDetail = async (param) => {
@@ -58,10 +58,10 @@ class RegistrationForm extends Component {
 
     }
 
-    getHistoryList = taskId => {
+    getHistoryList = () => {
         const { subProcessInstanceId } = this.state
-        historyList({ taskId, subProcessInstanceId }).then(res => {
-
+        historyList({ processInstanceId: 260001 || subProcessInstanceId }).then(res => {
+            console.log(res)
         })
     }
 
@@ -85,6 +85,8 @@ class RegistrationForm extends Component {
                 }).catch(err => {
                     Message.destroy()
                     Message.error("处理异常")
+                }).finally(e => {
+                    this.getHistoryImg()
                 })
             }
         });
@@ -138,16 +140,16 @@ class RegistrationForm extends Component {
                 {detailTitle != "已完成" && this.renderBtn()}
                 <div>任务流图片</div>
                 <div>
-                    {/* < Canvas src={`data:image/png;base64,${historyImg}`} /> */}
+                    {historyImg && < Canvas src={`data:image/png;base64,${historyImg}`} />}
                     {/* <img src={`data:image/png;base64,${historyImg}`} /> */}
                 </div>
                 <Card style={{ margin: "10px 0" }}>
                     <div>历史记录</div>
                 </Card>
-
+                {/* 
                 <Card>
                     <BpmnViewer />
-                </Card>
+                </Card> */}
 
             </PageHeaderWrapper >
         );

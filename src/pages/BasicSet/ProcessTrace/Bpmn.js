@@ -75,6 +75,17 @@ class Bpmn extends Component {
         });
     }
 
+     getMousePos=(event)=> {
+        var e = event || window.event;
+        var scrollX = document.documentElement.scrollLeft || document.body.scrollLeft;
+        var scrollY = document.documentElement.scrollTop || document.body.scrollTop;
+
+        console.log(e,scrollX,scrollY)
+        var x = e.pageX || e.clientX + scrollX;
+        var y = e.pageY || e.clientY + scrollY;
+        return { "x": x, "y": y };
+    }
+
     render() {
         const { x, y, selectId } = this.state
         const { data } = this.props;

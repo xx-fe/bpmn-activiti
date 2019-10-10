@@ -13,7 +13,8 @@ export default class Canvas extends Component {
         img.onload = () => {
             this.ctx.drawImage(img, 0, 0);
         }
-        img.src = "https://cdn.arstechnica.net/wp-content/uploads/2017/09/mario-collage-800x450.jpg"
+     
+        img.src = src
     }
 
 
@@ -68,7 +69,7 @@ export default class Canvas extends Component {
                 position: "absolute",
                 opacity: display ? 1 : 0,
                 left: x,
-                top: y - 200,
+                top: y - 220,
                 width: 100,
                 height: 200,
                 border: "red 2px solid",
