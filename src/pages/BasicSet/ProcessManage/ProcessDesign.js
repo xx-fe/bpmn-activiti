@@ -5,24 +5,24 @@
  * @Last Modified time: 2019-09-29 22:01:32
  * @Description: 基础设置 -> 流程管理 -> 流程设计
  */
-import React, {Component} from 'react';
-import {connect} from 'dva';
+import React, { Component } from 'react';
+import { connect } from 'dva';
 import router from 'umi/router';
-import {Card, Form, Button, notification} from 'antd';
+import { Card, Form, Button, notification } from 'antd';
 import PageHeaderWrapper from '@/components/PageHeaderWrapper';
 import FooterToolbar from '@/components/FooterToolbar';
 import FullModal from '@/widgets/FullModal';
-
+import EmbeddedComments from 'bpmn-js-embedded-comments';
 // Bpmn 相关文件
 import propertiesPanelModule from 'bpmn-js-properties-panel';
 import camundaModdleDescriptor from 'camunda-bpmn-moddle/resources/camunda';
 import propertiesProviderModule from './BpmnEditor/Toolbar';
 import EditingTools from './BpmnEditor/EditingTools';
 import BpmnModeler from './BpmnEditor/Modeler';
-import {diagramXML} from './BpmnEditor/sources/xml';
+import { diagramXML } from './BpmnEditor/sources/xml';
 import styles from './BpmnEditor/sources/Bpmn.less';
 
-@connect(({processManage, loading}) => ({
+@connect(({ processManage, loading }) => ({
     processManage,
     loading: loading.models.processManage,
 }))
@@ -37,13 +37,13 @@ class ProcessDesign extends Component {
     componentDidMount() {
         const {
             dispatch,
-            match: {params},
+            match: { params },
         } = this.props;
 
         dispatch({
             type: 'processManage/initFlowSelect',
             callback: data => {
-                const {condition, node_type, node_belong, rule_operator, roles, users} = data;
+                const { condition, node_type, node_belong, rule_operator, roles, users } = data;
                 const options = {
                     condition: this.translateData(condition, 'name', 'script'),
                     node_type: this.translateData(node_type),
@@ -66,10 +66,13 @@ class ProcessDesign extends Component {
                             propertiesPanel: {
                                 parent: '#properties-panel',
                             },
-                            additionalModules: [propertiesPanelModule, propertiesProviderModule],
+                            additionalModules: [propertiesPanelModule, propertiesProviderModule, EmbeddedComments],
                             moddleExtensions: {
                                 camunda: camundaModdleDescriptor,
                             },
+                            // additionalModules: [
+                            //     EmbeddedComments
+                            // ]
                         });
                         this.renderDiagram(xml || diagramXML);
                         // 删除 bpmn logo
@@ -145,7 +148,7 @@ class ProcessDesign extends Component {
         const reader = new FileReader();
         let data = '';
         reader.readAsText(file);
-        reader.onload = function(event) {
+        reader.onload = function (event) {
             data = event.target.result;
             that.renderDiagram(data, 'open');
         };
@@ -155,16 +158,16 @@ class ProcessDesign extends Component {
     handleSave = () => {
         const {
             dispatch,
-            match: {params},
+            match: { params },
         } = this.props;
         let json_xml = '',
             svg_xml = '';
 
-        this.bpmnModeler.saveXML({format: true}, (err, xml) => {
+        this.bpmnModeler.saveXML({ format: true }, (err, xml) => {
             console.log(xml);
             json_xml = xml;
         });
-        this.bpmnModeler.saveSVG({format: true}, (err, data) => {
+        this.bpmnModeler.saveSVG({ format: true }, (err, data) => {
             console.log(data);
             svg_xml = data;
         });
@@ -194,14 +197,14 @@ class ProcessDesign extends Component {
 
     // 下载 SVG 格式
     handleDownloadSvg = () => {
-        this.bpmnModeler.saveSVG({format: true}, (err, data) => {
+        this.bpmnModeler.saveSVG({ format: true }, (err, data) => {
             this.download('svg', data);
         });
     };
 
     // 下载 XML 格式
     handleDownloadXml = () => {
-        this.bpmnModeler.saveXML({format: true}, (err, data) => {
+        this.bpmnModeler.saveXML({ format: true }, (err, data) => {
             this.download('xml', data);
         });
     };
@@ -211,8 +214,8 @@ class ProcessDesign extends Component {
         const newScale = !radio
             ? 1.0 // 不输入radio则还原
             : this.state.scale + radio <= 0.2 // 最小缩小倍数
-            ? 0.2
-            : this.state.scale + radio;
+                ? 0.2
+                : this.state.scale + radio;
 
         this.bpmnModeler.get('canvas').zoom(newScale);
         this.setState({
@@ -234,7 +237,7 @@ class ProcessDesign extends Component {
 
     // 预览图片
     handlePreview = () => {
-        this.bpmnModeler.saveSVG({format: true}, (err, data) => {
+        this.bpmnModeler.saveSVG({ format: true }, (err, data) => {
             this.setState({
                 svgSrc: data,
                 svgVisible: true,
@@ -244,13 +247,13 @@ class ProcessDesign extends Component {
 
     // 折叠
     handlePanelFold = () => {
-        const {hidePanel} = this.state;
+        const { hidePanel } = this.state;
         this.setState(
             {
                 hidePanel: !hidePanel,
                 hideCount: 1,
             },
-            () => {}
+            () => { }
         );
     };
 
@@ -268,15 +271,15 @@ class ProcessDesign extends Component {
     };
 
     render() {
-        const {loading} = this.props;
-        const {hidePanel, hideFold, hideCount, svgVisible, svgSrc} = this.state;
+        const { loading } = this.props;
+        const { hidePanel, hideFold, hideCount, svgVisible, svgSrc } = this.state;
 
         return (
-            <PageHeaderWrapper title="流程设计" contentstyle={{height: 'calc(100% - 100px)'}}>
+            <PageHeaderWrapper title="流程设计" contentstyle={{ height: 'calc(100% - 100px)' }}>
                 <Card
                     bordered={false}
-                    style={{width: '100%', height: '100%'}}
-                    bodyStyle={{height: '100%'}}
+                    style={{ width: '100%', height: '100%' }}
+                    bodyStyle={{ height: '100%' }}
                 >
                     <div className={styles.container} id="js-drop-zone">
                         <div className={styles.canvas} id="canvas" />
@@ -292,9 +295,9 @@ class ProcessDesign extends Component {
                         <div
                             className={`properties-panel-parent ${
                                 hideCount === 1 ? (hidePanel ? 'hidePanel' : 'showPanel') : ''
-                            }`}
+                                }`}
                             id="properties-panel"
-                            style={{height: '100%'}}
+                            style={{ height: '100%' }}
                         />
                         <EditingTools
                             onOpenFIle={this.handleOpenFile}

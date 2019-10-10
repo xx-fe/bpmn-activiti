@@ -119,7 +119,7 @@ export default {
 
     proxy: {     //axios跨域处理
         '/api': {       //此处并非和url一致
-            target: 'http://192.168.80.247:8080/',
+            target: 'http://192.168.136.211:8080/',
             changeOrigin: true, //允许跨域
             pathRewrite: {
                 '^/api': ''

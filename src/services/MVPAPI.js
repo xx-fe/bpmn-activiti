@@ -45,14 +45,16 @@ export async function submitCheckData(data) {
 //http://localhost:8080/activiti-demo//hk/compliance/task-submit
 
 
-// 历史记录:
+// 历史批注记录:
 export async function historyList(data) {
     return request({
-        url: '/task/listAction',
+        url: '/test/listComments',
         method: 'post',
         data
     })
 }
+
+// {{baseUrl}}/test/listComments
 
 // 拿到详情图片
 export async function gethistoryImg(id) {

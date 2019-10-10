@@ -1,7 +1,7 @@
 import React, { Component, Fragment } from 'react';
 import BpmnViewer from 'bpmn-js';
+import { Table } from 'antd';
 import camundaModdleDescriptor from 'camunda-bpmn-moddle/resources/camunda';
-import diagramXML from './xml.xml';
 import './index.css';
 import detailList from './mock.json'
 import { async } from 'q';
@@ -12,6 +12,19 @@ class Bpmn extends Component {
         this.state = {
             x: 0, y: 0, selectedId: ""
         }
+
+        this.columns = [{
+            title: 'startTime',
+            dataIndex: 'startTime',
+        },
+        {
+            title: 'activityName',
+            dataIndex: 'activityName',
+        },
+        {
+            title: 'activityId',
+            dataIndex: 'activityId',
+        },]
     }
 
     componentDidMount() {
@@ -48,31 +61,23 @@ class Bpmn extends Component {
             ];
             events.forEach(function (event) {
                 eventBus.on(event, function (e) {
-                    console.info("划入")
+                    // console.info("划入")
                     const { clientX, clientY } = e.originalEvent
                     const arr = detailList.filter(li => li.activityId == e.element.id)
-                    console.log(e.element.id, arr);
+                    // console.log(e.element.id, arr);
                     if (arr.length >= 1) {
-                        clearTimeout(that.handleDisappear)
-
                         that.setState({
                             x: clientX,
                             y: clientY,
                             selectedId: e.element.id
                         })
+                    } else {
+                        that.setState({
+                            selectedId: ""
+                        })
                     }
                 });
             });
-
-            eventBus.on("element.out", function (e) {
-                console.warn("划出")
-                that.handleDisappear = setTimeout(() => {
-                    that.setState({
-                        selectedId: ""
-                    })
-                }, 100)
-
-            })
             // 删除 bpmn logo
             const bjsIoLogo = document.querySelector('.bjs-powered-by');
             while (bjsIoLogo.firstChild) {
@@ -85,7 +90,7 @@ class Bpmn extends Component {
     }
 
     readXML = () => {
-        let xml = "", xmlDoc;
+        let xml = "", xmlDoc, doc, ele;
         try {
             let xmlhttp = new window.XMLHttpRequest();
             //创建一个新的http请求，并指定此请求的方法、URL以及验证信息
@@ -98,6 +103,23 @@ class Bpmn extends Component {
                 xmlDoc = xmlhttp.responseXML.documentElement;
                 // return xmlDoc
                 xml = (new XMLSerializer()).serializeToString(xmlDoc)
+
+                doc = xmlhttp.responseXML
+                ele = doc.getElementsByTagName("bpmndi:BPMNShape")
+                console.log(ele)
+
+                for (i = 0; i < doc.length; i++) {
+
+                    // document.write("<div class='aaaa'>");
+                    // document.write(x[i].getElementsByTagName("to")[0].childNodes[0].nodeValue);
+                    // document.write("</div>");
+                    // document.write("<div class='aaaa'>");
+                    // document.write(x[i].getElementsByTagName("heading")[0].childNodes[0].nodeValue);
+                    // document.write("</div>");
+                    // document.write("<div class='aaaa'>");
+                    // document.write(x[i].getElementsByTagName("body")[0].childNodes[0].nodeValue);
+                    // document.write("</div>");
+                }
             }
         } catch (e) {
             console.log(e)
@@ -123,10 +145,10 @@ class Bpmn extends Component {
     render() {
         const { x, y, selectedId } = this.state
         const detailArr = detailList.filter(v => v.activityId == selectedId)
-
+        console.log(detailArr.length >= 1 && selectedId)
         return (
-            <Fragment>
-                <div id="canvas" style={{ height: '100%', position: "relative" }} >
+            <div style={{ display: "flex", justifyContent: "space-between" }} >
+                <div id="canvas" style={{ height: '100%', position: "relative", width: "100%" }} >
                     <div style={{
                         position: "fixed",
                         left: x,
@@ -149,47 +171,17 @@ class Bpmn extends Component {
                         })}
                     </div>
 
-                    <div style={{ position: "absolute", right: 0, top: 0 }}>
-                        {detailList.map((v, index) => {
-                            return (
-                                <ul style={{
-                                    width: 800,
-                                    border: `2px red ${detailArr.length >= 1 && (v.activityId == selectedId) ? "solid" : ""}`,
-                                    transition: "0.5s all ease"
-                                }} key={index} >
-                                    <li >
-                                        {v.startTime}&nbsp;&nbsp;&nbsp;&nbsp;{v.activityName}&nbsp;&nbsp;&nbsp;&nbsp;
-                                    {v.activityId}
-                                    </li>
-                                </ul>
-                            );
-                        })}
-                    </div>
+                    {/* <div style={{ position: "absolute", right: 0, top: 0, zIndex: 9 }}>
+                    
+                    </div> */}
                 </div>
-
-
-            </Fragment>
+                <Table
+                    columns={this.columns}
+                    pagination={false}
+                    dataSource={detailList} />
+            </div>
         );
     }
 }
-
 export default Bpmn;
 
-
-// const t = [
-//     { id: 'Process_2', time: '2019-09-21 10:00:00', user: '张三', mark: '通过' },
-//     {
-//         id: 'SequenceFlow_0l6oqvc',
-//         time: '2019-09-21 10:10:00',
-//         user: '李四',
-//         mark: '不通过，请修改资料',
-//     },
-//     {
-//         id: 'Process_2',
-//         time: '2019-09-21 10:20:00',
-//         user: '张三',
-//         mark: '通过，资料已修补，请审核',
-//     },
-//     { id: 'SequenceFlow_0l6oqvc', time: '2019-09-21 10:10:00', user: '李四', mark: '通过' },
-//     { id: 'SequenceFlow_1js3qmv', time: '2019-09-21 10:30:00', user: '王五', mark: '通过' },
-// ];

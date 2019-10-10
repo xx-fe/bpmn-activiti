@@ -73,6 +73,7 @@ class RegistrationForm extends Component {
                     taskId,
                     bizType,
                     userId,
+                    auditor: "屎蛋",
                     auditResult: result,
                     remark: values.remark
                 }).then(res => {
@@ -88,18 +89,43 @@ class RegistrationForm extends Component {
         });
     };
 
-    render() {
+    renderBtn = () => {
         const { getFieldDecorator } = this.props.form;
-        const { customerInfo, historyImg, detailTitle, currentState, detailInfo } = this.state;
+        return <Card style={{ margin: "10px 0" }}>
+            <Form {...formItemLayout}>
+                <Form.Item label="审核意见">
+                    {getFieldDecorator('remark', {
+                        rules: [
+                            {
+                                required: true,
+                                message: '请输入您的审核意见',
+                            },
+                        ],
+                    })(<Input.TextArea rows={4} />)}
+                </Form.Item>
+            </Form>
+            <div style={{
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center'
+            }}>
+                <Button style={{
+                    margin: 10
+                }} type="primary" onClick={() => {
+                    this.submit("PASS")
+                }}>同意</Button>
+                <Button style={{
+                    margin: 10
+                }} type="danger" onClick={() => {
+                    this.submit("NO_PASS")
+                }}>驳回</Button>
+            </div>
+        </Card>
+    }
 
-        const formItemLayout = {
-            labelCol: {
-                span: 4,
-            },
-            wrapperCol: {
-                span: 20,
-            },
-        };
+    render() {
+
+        const { customerInfo, historyImg, detailTitle, currentState, detailInfo } = this.state;
 
         return (
             <PageHeaderWrapper title={<div>
@@ -108,36 +134,7 @@ class RegistrationForm extends Component {
                 <span style={{ marginLeft: 40 }}>当前状态  {currentState || ""}</span>
             </div>}>
                 <Customer customerInfo={customerInfo}></Customer>
-                <Card style={{ margin: "10px 0" }}>
-                    <Form {...formItemLayout}>
-                        <Form.Item label="审核意见">
-                            {getFieldDecorator('remark', {
-                                rules: [
-                                    {
-                                        required: true,
-                                        message: '请输入您的审核意见',
-                                    },
-                                ],
-                            })(<Input.TextArea rows={4} />)}
-                        </Form.Item>
-                    </Form>
-                    <div style={{
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center'
-                    }}>
-                        <Button style={{
-                            margin: 10
-                        }} type="primary" onClick={() => {
-                            this.submit("PASS")
-                        }}>同意</Button>
-                        <Button style={{
-                            margin: 10
-                        }} type="danger" onClick={() => {
-                            this.submit("NO_PASS")
-                        }}>驳回</Button>
-                    </div>
-                </Card>
+                {detailTitle != "已完成" && this.renderBtn()}
                 <Card style={{ margin: "10px 0" }}>
                     <div>任务流图片</div>
                     <div>
@@ -155,6 +152,16 @@ class RegistrationForm extends Component {
 
 const WrappedRegistrationForm = Form.create({ name: 'register' })(RegistrationForm);
 export default WrappedRegistrationForm;
+
+
+const formItemLayout = {
+    labelCol: {
+        span: 4,
+    },
+    wrapperCol: {
+        span: 20,
+    },
+};
 
 
 // const customerInfo = {
