@@ -63,7 +63,7 @@ export default {
     plugins,
     define: {
         APP_TYPE: APP_TYPE || '',
-        // 'process.env.apiUrl': 'http://192.168.1.154:5077', // 联调环境
+        // 'process.env.apiUrl': 'http://0.0.0.0:8000', // 联调环境
         'process.env.apiUrl': 'http://localhost:8000',
     },
     treeShaking: true,

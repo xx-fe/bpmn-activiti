@@ -199,6 +199,14 @@ class RegistrationForm extends Component {
                 {historyImg && <Canvas src={`data:image/png;base64,${historyImg}`} />}
 
 
+                <div>任务流图片</div>
+                <div>
+                    {historyImg && < Canvas src={`data:image/png;base64,${historyImg}`} />}
+                    {/* <img src={`data:image/png;base64,${historyImg}`} /> */}
+                </div>
+                <Card style={{ margin: "10px 0" }}>
+                    <div>历史记录</div>
+                </Card>
 
                 <Card>
                     <BpmnViewer />
