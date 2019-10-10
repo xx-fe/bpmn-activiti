@@ -5,8 +5,8 @@ import webpackPlugin from './plugin.config';
 import defaultSettings from '../src/defaultSettings';
 import slash from 'slash2';
 
-const {pwa, primaryColor} = defaultSettings;
-const {APP_TYPE, TEST} = process.env;
+const { pwa, primaryColor } = defaultSettings;
+const { APP_TYPE, TEST } = process.env;
 
 const plugins = [
     [
@@ -28,20 +28,20 @@ const plugins = [
             },
             pwa: pwa
                 ? {
-                      workboxPluginMode: 'InjectManifest',
-                      workboxOptions: {
-                          importWorkboxFrom: 'local',
-                      },
-                  }
+                    workboxPluginMode: 'InjectManifest',
+                    workboxOptions: {
+                        importWorkboxFrom: 'local',
+                    },
+                }
                 : false,
             ...(!TEST && os.platform() === 'darwin'
                 ? {
-                      dll: {
-                          include: ['dva', 'dva/router', 'dva/saga', 'dva/fetch'],
-                          exclude: ['@babel/runtime'],
-                      },
-                      hardSource: false,
-                  }
+                    dll: {
+                        include: ['dva', 'dva/router', 'dva/saga', 'dva/fetch'],
+                        exclude: ['@babel/runtime'],
+                    },
+                    hardSource: false,
+                }
                 : {}),
         },
     ],
@@ -116,4 +116,14 @@ export default {
         basePath: '/',
     },
     chainWebpack: webpackPlugin,
+
+    proxy: {     //axios跨域处理
+        '/api': {       //此处并非和url一致
+            target: 'http://192.168.136.211:8080/',
+            changeOrigin: true, //允许跨域
+            pathRewrite: {
+                '^/api': ''
+            }
+        }
+    }
 };

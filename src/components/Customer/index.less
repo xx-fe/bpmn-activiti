@@ -1,0 +1,19 @@
+@import '~antd/lib/style/themes/default.less';
+@import '~@/utils/utils.less';
+
+  .ant-card {
+    margin: 10px 0 !;
+  }
+  .imgViewer {
+    position: relative;
+    &::before {
+      content: attr(data-content);
+      position: absolute;
+      background: #fff;
+      left: 0;
+      top: -25px;
+      white-space: nowrap;
+      color: #3180fe;
+    }
+  }
+

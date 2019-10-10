@@ -7,27 +7,25 @@
  */
 import React, { Component } from 'react';
 import { connect } from 'dva';
-import router from 'umi/router';
+// import router from 'umi/router';
 import { Card, Form, Button, notification } from 'antd';
-import PageHeaderWrapper from '@/components/PageHeaderWrapper';
-import FooterToolbar from '@/components/FooterToolbar';
-import FullModal from '@/widgets/FullModal';
-import EmbeddedComments from 'bpmn-js-embedded-comments';
+// import PageHeaderWrapper from '@/components/PageHeaderWrapper';
+// import FooterToolbar from '@/components/FooterToolbar';
+// import FullModal from '@/widgets/FullModal';
+
 // Bpmn 相关文件
-import propertiesPanelModule from 'bpmn-js-properties-panel';
-import camundaModdleDescriptor from 'camunda-bpmn-moddle/resources/camunda';
-import propertiesProviderModule from './BpmnEditor/Toolbar';
-import EditingTools from './BpmnEditor/EditingTools';
-import BpmnModeler from './BpmnEditor/Modeler';
-import { diagramXML } from './BpmnEditor/sources/xml';
-import styles from './BpmnEditor/sources/Bpmn.less';
+import propertiesProviderModule from './Toolbar';
+import EditingTools from './EditingTools';
+import BpmnModeler from './Modeler';
+import { diagramXML } from './sources/xml';
+import styles from './sources/Bpmn.less';
 
 @connect(({ processManage, loading }) => ({
     processManage,
     loading: loading.models.processManage,
 }))
-@Form.create()
-class ProcessDesign extends Component {
+// @Form.create()
+class BPMN extends Component {
     state = {
         scale: 1, // 流程图比例
         svgVisible: false, // 预览图片
@@ -54,6 +52,8 @@ class ProcessDesign extends Component {
                 };
                 window.sessionStorage.setItem('flowOptions', JSON.stringify(options));
                 // 获取流程设计 xml
+
+
                 dispatch({
                     type: 'processManage/findBPMNById',
                     payload: {
@@ -63,35 +63,26 @@ class ProcessDesign extends Component {
                     callback: xml => {
                         this.bpmnModeler = new BpmnModeler({
                             container: '#canvas',
-                            propertiesPanel: {
-                                parent: '#properties-panel',
-                            },
-                            additionalModules: [propertiesPanelModule, propertiesProviderModule, EmbeddedComments],
-                            moddleExtensions: {
-                                camunda: camundaModdleDescriptor,
-                            },
-                            // additionalModules: [
-                            //     EmbeddedComments
-                            // ]
                         });
-                        this.renderDiagram(xml || diagramXML);
+                        this.renderDiagram(diagramXML);
                         // 删除 bpmn logo
                         const bjsIoLogo = document.querySelector('.bjs-powered-by');
                         while (bjsIoLogo.firstChild) {
                             bjsIoLogo.removeChild(bjsIoLogo.firstChild);
                         }
+
                     },
                 });
             },
         });
     }
 
-    componentWillUnmount() {
-        window.sessionStorage.removeItem('flowOptions');
-        this.props.dispatch({
-            type: 'processManage/clear',
-        });
-    }
+    // componentWillUnmount() {
+    //     window.sessionStorage.removeItem('flowOptions');
+    //     this.props.dispatch({
+    //         type: 'processManage/clear',
+    //     });
+    // }
 
     // key value 转换
     translateData(data, name = 'label', value = 'value') {
@@ -257,10 +248,10 @@ class ProcessDesign extends Component {
         );
     };
 
-    // 返回列表
-    handleBack() {
-        router.push('/basicSet/processManage');
-    }
+    // // 返回列表
+    // handleBack() {
+    //     router.push('/basicSet/processManage');
+    // }
 
     // 关闭流程图弹窗
     handleCancel = () => {
@@ -275,7 +266,7 @@ class ProcessDesign extends Component {
         const { hidePanel, hideFold, hideCount, svgVisible, svgSrc } = this.state;
 
         return (
-            <PageHeaderWrapper title="流程设计" contentstyle={{ height: 'calc(100% - 100px)' }}>
+            <div >
                 <Card
                     bordered={false}
                     style={{ width: '100%', height: '100%' }}
@@ -283,7 +274,7 @@ class ProcessDesign extends Component {
                 >
                     <div className={styles.container} id="js-drop-zone">
                         <div className={styles.canvas} id="canvas" />
-                        <div
+                        {/* <div
                             className={`properties-panel-fold
                                 ${hideCount === 1 ? (hidePanel ? 'fold' : '') : ''}
                                 ${hideCount === 1 ? (hideFold ? 'hide' : '') : ''}
@@ -298,8 +289,8 @@ class ProcessDesign extends Component {
                                 }`}
                             id="properties-panel"
                             style={{ height: '100%' }}
-                        />
-                        <EditingTools
+                        /> */}
+                        {/* <EditingTools
                             onOpenFIle={this.handleOpenFile}
                             // onSave={this.handleSave}
                             onUndo={this.handleUndo}
@@ -310,12 +301,12 @@ class ProcessDesign extends Component {
                             onZoomOut={() => this.handleZoom(-0.1)}
                             onZoomReset={() => this.handleZoom()}
                             onPreview={this.handlePreview}
-                        />
+                        /> */}
                     </div>
                 </Card>
 
                 {/* 查看流程图弹窗 */}
-                {svgVisible && (
+                {/* {svgVisible && (
                     <FullModal visible={svgVisible} onCancel={this.handleCancel}>
                         <div
                             dangerouslySetInnerHTML={{
@@ -329,10 +320,10 @@ class ProcessDesign extends Component {
                     <Button type="primary" loading={loading} onClick={this.handleSave}>
                         保存
                     </Button>
-                </FooterToolbar>
-            </PageHeaderWrapper>
+                </FooterToolbar> */}
+            </div>
         );
     }
 }
 
-export default ProcessDesign;
+export default BPMN;

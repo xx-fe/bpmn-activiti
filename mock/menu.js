@@ -15,6 +15,22 @@ export default {
                             name: '流程跟踪',
                             path: '/basicSet/processTrace',
                         },
+                        {
+                            name: 'C端输入',
+                            path: '/basicSet/phoneInput',
+                        },
+                        {
+                            name: 'Be待办列表',
+                            path: '/basicSet/list',
+                        },
+                        {
+                            name: '开户资料审核',
+                            path: '/basicSet/pcInput',
+                        },
+                        {
+                            name: '黑名单审核',
+                            path: '/basicSet/blackList',
+                        },
                     ],
                 },
             ],

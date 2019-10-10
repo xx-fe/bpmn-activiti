@@ -1,4 +1,4 @@
-import {stringify} from 'qs';
+import { stringify } from 'qs';
 import request from '@/utils/request';
 
 export async function queryProjectNotice() {
@@ -71,7 +71,7 @@ export async function queryFakeList(params) {
 }
 
 export async function removeFakeList(params) {
-    const {count = 5, ...restParams} = params;
+    const { count = 5, ...restParams } = params;
     return request(`/api/fake_list?count=${count}`, {
         method: 'POST',
         body: {
@@ -82,7 +82,7 @@ export async function removeFakeList(params) {
 }
 
 export async function addFakeList(params) {
-    const {count = 5, ...restParams} = params;
+    const { count = 5, ...restParams } = params;
     return request(`/api/fake_list?count=${count}`, {
         method: 'POST',
         body: {
@@ -93,7 +93,7 @@ export async function addFakeList(params) {
 }
 
 export async function updateFakeList(params) {
-    const {count = 5, ...restParams} = params;
+    const { count = 5, ...restParams } = params;
     return request(`/api/fake_list?count=${count}`, {
         method: 'POST',
         body: {
