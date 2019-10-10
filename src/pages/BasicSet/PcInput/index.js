@@ -5,7 +5,10 @@ import {
     Form,
     Input,
     Button,
-    Message
+    Message,
+    Table,
+    Row,
+    Col
 } from 'antd';
 
 // import { Loading } from '@alifd/next';
@@ -13,6 +16,7 @@ import PageHeaderWrapper from '@/components/PageHeaderWrapper';
 import Customer from '@/components/Customer';
 import Canvas from '@/components/Canvas'
 import { getDetail, submitCheckData, gethistoryImg, historyList } from '@/services/MVPAPI'
+import { readXML } from '@/utils/utils'
 import { async } from 'q';
 
 // Bpmn 相关文件
@@ -27,15 +31,33 @@ class RegistrationForm extends Component {
             Loading: false,
             detailTitle: "",   //当前的场景
             detailInfo: {}, // 流程跟踪详情
+            listData: []  //历史操作记录
         };
+
+        this.columns = [{
+            title: 'startTime',
+            dataIndex: 'startTime',
+        },
+        {
+            title: 'activityName',
+            dataIndex: 'activityName',
+        },
+        {
+            title: 'activityId',
+            dataIndex: 'activityId',
+        },]
     }
 
     async componentDidMount() {
         const { taskId, bizType, taskStatus, userId, detailTitle, currentState } = localStorage
         this.setState({ taskId, bizType, taskStatus, userId, detailTitle, currentState })
+        this.getTotalImg()
         await this.getDetail({ taskId, bizType, taskStatus, userId })
         this.getHistoryImg()
         this.getHistoryList()
+
+        // const ele = readXML()
+        // console.log(ele)
     }
 
     getDetail = async (param) => {
@@ -53,16 +75,29 @@ class RegistrationForm extends Component {
         const { subProcessInstanceId } = this.state
         gethistoryImg(subProcessInstanceId).then(res => {
             if (res.data && res.res_code == "0")
-                this.setState({ historyImg: res.data })
+                this.setState({ sessionImg: res.data })
         })
 
     }
 
+    getTotalImg = () => {
+        gethistoryImg(260001).then(res => {
+            if (res.data && res.res_code == "0")
+                this.setState({ historyImg: res.data })
+        })
+    }
+
     getHistoryList = () => {
         const { subProcessInstanceId } = this.state
-        historyList({ processInstanceId: 260001 || subProcessInstanceId }).then(res => {
+        historyList({ processInstanceId: subProcessInstanceId }).then(res => {
             console.log(res)
+            if (res.data) {
+                this.setState({
+                    listData: res.data
+                })
+            }
         })
+
     }
 
     submit = result => {
@@ -87,6 +122,7 @@ class RegistrationForm extends Component {
                     Message.error("处理异常")
                 }).finally(e => {
                     this.getHistoryImg()
+                    this.getHistoryList()
                 })
             }
         });
@@ -128,8 +164,7 @@ class RegistrationForm extends Component {
 
     render() {
 
-        const { customerInfo, historyImg, detailTitle, currentState, detailInfo } = this.state;
-
+        const { customerInfo, historyImg, detailTitle, currentState, detailInfo, sessionImg, listData } = this.state;
         return (
             <PageHeaderWrapper title={<div>
                 <span style={{ marginRight: 40 }}>{detailTitle || ""} 审核详情</span>
@@ -138,18 +173,36 @@ class RegistrationForm extends Component {
             </div>}>
                 <Customer customerInfo={customerInfo}></Customer>
                 {detailTitle != "已完成" && this.renderBtn()}
-                <div>任务流图片</div>
-                <div>
-                    {historyImg && < Canvas src={`data:image/png;base64,${historyImg}`} />}
-                    {/* <img src={`data:image/png;base64,${historyImg}`} /> */}
-                </div>
-                <Card style={{ margin: "10px 0" }}>
-                    <div>历史记录</div>
-                </Card>
-                {/* 
+                <Row gutter={24} style={{ margin: "10px 0" }}>
+                    <Col span={12} style={{ margin: "10px 0" }}>
+                        <Card>
+                            <img style={{
+                                width: "80%"
+                            }} src={`data:image/png;base64,${sessionImg}`} />
+                        </Card>
+                    </Col>
+                    <Col span={12}>
+                        <Card style={{ margin: "10px 0" }}>
+                            <h2 style={{
+
+                            }}>历史记录</h2>
+                            {listData.map((li, index) => {
+                                return <div style={{
+
+                                }}>
+                                    {li.time}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{li.fullMessage}
+                                </div>
+                            })}
+                        </Card>
+                    </Col>
+                </Row>
+                {historyImg && <Canvas src={`data:image/png;base64,${historyImg}`} />}
+
+
+
                 <Card>
                     <BpmnViewer />
-                </Card> */}
+                </Card>
 
             </PageHeaderWrapper >
         );
@@ -168,6 +221,5 @@ const formItemLayout = {
         span: 20,
     },
 };
-
 
 

@@ -1,5 +1,13 @@
 import React, { Component, Fragment } from 'react';
+import {
+    Popover,
+    Row,
+    Col,
+    Card
+} from 'antd';
 
+import eleProList from './proList'
+import listData from './Listdata'
 export default class Canvas extends Component {
     state = {
         x: 0, y: 0
@@ -13,7 +21,6 @@ export default class Canvas extends Component {
         img.onload = () => {
             this.ctx.drawImage(img, 0, 0);
         }
-     
         img.src = src
     }
 
@@ -35,6 +42,7 @@ export default class Canvas extends Component {
         let rect = canvas.getBoundingClientRect();
         let leftB = parseInt(this.getStyles(canvas).borderLeftWidth);//获取的是样式，需要转换为数值
         let topB = parseInt(this.getStyles(canvas).borderTopWidth);
+
         return {
             x: (e.clientX - rect.left) - leftB,
             y: (e.clientY - rect.top) - topB
@@ -47,43 +55,97 @@ export default class Canvas extends Component {
 
         console.log(this.getCanvasPos(c, e))
         const { x, y } = this.getCanvasPos(c, e)
-        const { xMin, xMax, yMin, yMax } = a
-        if (x >= xMin && x <= xMax && y >= yMin && y <= yMax) {
+        let obj = this.checkSelcet(x, y)
+        if (obj.flag) {
             this.setState({
-                x, y, display: true
+                x, y, display: true, id: obj.id
             })
         } else {
             this.setState({
-                display: false
+                display: false,
+                id: ""
             })
         }
     }
 
-    render() {
-        const { x, y, display } = this.state
-        return <div style={{ position: "relative" }}>
-            <canvas onMouseMove={this.draw} id="test" width="1000" height="300">
+    checkSelcet = (x, y) => {
+        let flag = false, selectId;
+        eleProList.some(li => {
+            const { xMin, xMax, yMin, yMax, id } = li
+            if (x >= xMin && x <= xMax && y >= yMin && y <= yMax) {
+                flag = true;
+                selectId = id;
+                return true
+            }
+        });
 
-            </canvas>
-            <div style={{
-                position: "absolute",
-                opacity: display ? 1 : 0,
-                left: x,
-                top: y - 220,
-                width: 100,
-                height: 200,
-                border: "red 2px solid",
-                backgroundColor: "blue",
-                zIndex: 999
-            }}>233</div>
-        </div>
+        return { flag, id: selectId }
+    }
+
+    render() {
+        const { x, y, display, id } = this.state
+        // const x = 100, y = 100, display = true;
+        const detailArr = listData.filter(v => v.id == id)
+        console.log(id, "列表数据是啥")
+        // return 
+        return <Row gutter={24}>
+            <Col span={12} >
+                <Card style={{ margin: "10px 0" }}>
+                    <div>任务流图片</div>
+                    <div style={{ position: "relative" }}>
+                        <canvas onMouseMove={this.draw} id="test" width="1200" height="1000">
+
+                        </canvas>
+                        <div
+                            style={{
+                                position: "absolute",
+                                borderRadius: 10,
+                                padding: 10,
+                                display: display ? "block" : "none",
+                                opacity: 0.8,
+                                left: x,
+                                top: y - 270,
+                                width: 500,
+                                height: 250,
+                                backgroundColor: "#fff",
+                                boxShadow: "2px 2px 5px #333333",
+                                zIndex: 999
+                            }}>
+                            {detailArr.map((v, index) => {
+                                return (
+                                    <div key={index} >
+                                        <div>
+                                            {v.time}&nbsp;&nbsp;&nbsp;&nbsp;{v.fullMessage}&nbsp;&nbsp;&nbsp;&nbsp;
+                                        </div>
+                                        {v.src && <div>
+                                            <img style={{ width: "80%" }} src={v.src} />
+                                        </div>}
+                                    </div>
+                                );
+                            })}
+                        </div>
+                    </div>
+
+                </Card>
+            </Col>
+            <Col span={12}>
+                <Card style={{ margin: "10px 0" }}>
+                    <h2>历史记录</h2>
+                    {listData.map((li, index) => {
+                        return <div style={{
+                            margin: "10px 0",
+                            padding: "5px 10px",
+                            background: li.id == id ? "#E6F7FF" : "",
+                            border: li.id == id ? "solid #91D5FF 1px" : "",
+                            borderRadius: 10
+                        }}>
+                            <span >{index + 1}.</span> &nbsp;&nbsp;{li.time}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{li.fullMessage}
+                        </div>
+                    })}
+                </Card>
+            </Col>
+        </Row>
     }
 }
 
 
-const a = {
-    xMin: 100,
-    xMax: 300,
-    yMin: 100,
-    yMax: 300
-}

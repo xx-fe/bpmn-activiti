@@ -1,7 +1,7 @@
 import moment from 'moment';
 import React from 'react';
 import nzh from 'nzh/cn';
-import {parse, stringify} from 'qs';
+import { parse, stringify } from 'qs';
 
 export function fixedZero(val) {
     return val * 1 < 10 ? `0${val}` : val;
@@ -12,18 +12,18 @@ export function getBeforeTimeDistance(type) {
     let beginTime, endTime;
 
     if (type === 'today') {
-        beginTime = moment().set({hour: 0, minute: 0, second: 0});
+        beginTime = moment().set({ hour: 0, minute: 0, second: 0 });
     } else if (type === 'week') {
         beginTime = moment()
-            .set({hour: 0, minute: 0, second: 0})
+            .set({ hour: 0, minute: 0, second: 0 })
             .subtract(6, 'days');
     } else if (type === 'month') {
         beginTime = moment()
-            .set({hour: 0, minute: 0, second: 0})
+            .set({ hour: 0, minute: 0, second: 0 })
             .subtract(29, 'days');
     }
 
-    endTime = moment().set({hour: 23, minute: 59, second: 59});
+    endTime = moment().set({ hour: 23, minute: 59, second: 59 });
 
     return [beginTime, endTime];
 }
@@ -213,3 +213,45 @@ export const importCDN = (url, name) =>
         };
         document.head.appendChild(dom);
     });
+
+
+export const readXML = (url) => {
+    let xml = "", xmlDoc, doc, ele;
+    try {
+        let xmlhttp = new window.XMLHttpRequest();
+        //创建一个新的http请求，并指定此请求的方法、URL以及验证信息
+        xmlhttp.open("GET", "http://192.168.73.48:8009/xml.xml", false);
+        // xmlhttp.setRequestHeader("Content-Type", "text/xml");
+        xmlhttp.send(null);
+        if (xmlhttp.readyState == 4) {
+            // xmlhttp.overrideMimeType("text/xml")
+            console.log(xmlhttp, "解析成了啥")
+            xmlDoc = xmlhttp.responseXML.documentElement;
+            // return xmlDoc
+            xml = (new XMLSerializer()).serializeToString(xmlDoc)
+
+            doc = xmlhttp.responseXML
+            ele = doc.getElementsByTagName("bpmndi:BPMNShape")
+  
+
+        }
+    } catch (e) {
+        console.log(e)
+    }
+    return ele
+
+    //暂时不考虑 IE
+    // let xmlDoc;
+    // try { //IE浏览器
+    //     xmlDoc = new ActiveXObject("Microsoft.XMLDOM");
+    // } catch (e) { //firefox,opera...火狐、欧朋等浏览器
+    //     xmlDoc = document.implementation.createDocument("", "", null);
+    // }
+    // try {
+    //     xmlDoc.asyc = false; //是否异步调用
+    //     xmlDoc.load("./xml.xml"); //文件路径
+    // } catch (e) {  //chrome
+
+
+    // }
+}

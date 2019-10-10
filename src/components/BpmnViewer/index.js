@@ -64,7 +64,7 @@ class Bpmn extends Component {
                     // console.info("划入")
                     const { clientX, clientY } = e.originalEvent
                     const arr = detailList.filter(li => li.activityId == e.element.id)
-                    // console.log(e.element.id, arr);
+                    console.log(e.element.id);
                     if (arr.length >= 1) {
                         that.setState({
                             x: clientX,
@@ -150,12 +150,15 @@ class Bpmn extends Component {
             <div style={{ display: "flex", justifyContent: "space-between" }} >
                 <div id="canvas" style={{ height: '100%', position: "relative", width: "100%" }} >
                     <div style={{
+                        borderRadius: 10,
+                        opacity: 0.8,
+                        backgroundColor: "#fff",
+                        boxShadow: "2px 2px 5px #333333",
                         position: "fixed",
                         left: x,
-                        top: y - 200,
+                        top: y - 220,
                         width: 400,
                         height: 200,
-                        border: "4px red solid",
                         zIndex: 99,
                         display: (detailArr.length >= 1 && selectedId) ? "block" : "none",
                     }}>
