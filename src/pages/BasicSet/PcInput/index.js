@@ -146,10 +146,10 @@ class RegistrationForm extends Component {
                 <Card style={{ margin: "10px 0" }}>
                     <div>历史记录</div>
                 </Card>
-                {/* 
+
                 <Card>
                     <BpmnViewer />
-                </Card> */}
+                </Card>
 
             </PageHeaderWrapper >
         );
