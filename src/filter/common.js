@@ -339,6 +339,24 @@ export function statusFilter(value) {
 }
 
 /**
+ * 格式化黑名单当前的详情
+ * @param {string} value 
+ */
+export function pathFilter(value) {
+    switch (value) {
+        case "L1":
+            return "L1初审"
+        case "L1-2":
+            return "L1复审"
+        case "L2":
+            return "L2审核"
+        case "C":
+            return "合规官审核"
+    }
+}
+
+
+/**
  * 格式化金额
  * @param {number|string} value
  */

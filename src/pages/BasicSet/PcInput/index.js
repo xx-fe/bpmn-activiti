@@ -178,7 +178,7 @@ class RegistrationForm extends Component {
                     taskId,
                     bizType,
                     userId,
-                    auditor: "屎蛋",
+                    auditor: "王伟东",
                     auditResult: result,
                     remark: values.remark
                 }).then(res => {
@@ -191,6 +191,8 @@ class RegistrationForm extends Component {
                     Message.error("处理异常")
                 }).finally(e => {
                     // this.getHistoryImg()
+                    this.getMainProcessDetail()
+                    this.getMainHistoryList()
                     this.getHistoryList()
                     this.getFlowChartDetail()
                 })
@@ -227,7 +229,7 @@ class RegistrationForm extends Component {
                     margin: 10
                 }} type="danger" onClick={() => {
                     this.submit("NO_PASS")
-                }}>驳回</Button>
+                }}>不通过</Button>
             </div>
         </Card>
     }

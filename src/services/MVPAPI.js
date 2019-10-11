@@ -54,6 +54,16 @@ export async function submitCheckData(data) {
 //http://localhost:8080/activiti-demo//hk/compliance/task-submit
 
 
+//黑名单审核任务提交：
+export async function blackSubmitCheckData(data, path) {
+    return request({
+        url: `/hk/compliance/task-submit-${path}`,
+        method: 'post',
+        data,
+    });
+}
+
+
 // 历史批注记录:
 export async function historyList(data) {
     return request({
