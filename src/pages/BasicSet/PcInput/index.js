@@ -26,7 +26,6 @@ import BpmnViewer from '@/components/BpmnViewer';
 class RegistrationForm extends Component {
     constructor(props) {
         super(props);
-
         this.state = {
             customerInfo: {},
             Loading: false,
@@ -234,26 +233,29 @@ class RegistrationForm extends Component {
     }
 
     render() {
-        const { customerInfo, historyImg, detailTitle, currentState, detailInfo, sessionImg, listData, XMLDetail, XML, mainXMLDetail, mainXML, mainListData } = this.state;
+        const { customerInfo, historyImg, detailTitle, currentState, activeKey, detailInfo, sessionImg, listData, XMLDetail, XML, mainXMLDetail, mainXML, mainListData } = this.state;
         return (
             <PageHeaderWrapper title={<div>
                 <span style={{ marginRight: 40 }}>{detailTitle || ""} 审核详情</span>
                 ||
                 <span style={{ marginLeft: 40 }}>当前状态  {currentState || ""}</span>
             </div>}>
-                <Tabs defaultActiveKey="1">
-                    <TabPane tab="审核详情" key="1">
+                <Tabs defaultActiveKey="1" onChange={activeKey => {
+                    this.setState({ activeKey })
+
+                }} >
+                    <TabPane tab="审核详情" key="1" >
                         <Customer customerInfo={customerInfo}></Customer>
                         {detailTitle != "已完成" && this.renderBtn()}
                     </TabPane>
-                    <TabPane tab="子任务操作记录" key="2">
+                    <TabPane tab="子任务操作记录" key="2" >
                         <Card>
-                            {XML && XMLDetail && <BpmnViewer historyList={listData} XML={XML} XMLDetail={XMLDetail} />}
+                            {activeKey == "2" && XML && XMLDetail && <BpmnViewer historyList={listData} XML={XML} XMLDetail={XMLDetail} />}
                         </Card>
                     </TabPane>
-                    <TabPane tab="主流程操作记录" key="3">
+                    <TabPane tab="主流程操作记录" key="3" >
                         <Card>
-                            {mainXMLDetail && mainXML && <BpmnViewer historyList={mainListData} XML={mainXML} XMLDetail={mainXMLDetail} />}
+                            {activeKey == "3" && mainXMLDetail && mainXML && <BpmnViewer historyList={mainListData} XML={mainXML} XMLDetail={mainXMLDetail} />}
                         </Card>
                     </TabPane>
                 </Tabs>

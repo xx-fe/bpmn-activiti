@@ -4,7 +4,8 @@ import moment from 'moment';
 import router from 'umi/router';
 import React, { Component } from 'react';
 import PageHeaderWrapper from '@/components/PageHeaderWrapper';
-import { getList } from '@/services/MVPAPI'
+// import { getList } from '@/services/MVPAPI'
+import { getBlackList } from '@/services/MVPAPI'
 import { bizTypeFilter, statusFilter } from '@/filter/common';
 const columns = [
     {
@@ -68,76 +69,6 @@ const columns = [
     // },
 ];
 
-const data = [
-    {
-        taskId: '233333', //作业流水号
-        userId: '233333333',
-        partyNo: '2019061120001', //客户号
-        userName: '客户', //客户姓名
-        createdAt: '2019-06-12', //生成日期
-        bizType: 'OPEN_ACCOUNT', //业务类型
-        taskStatus: 'WAIT_INPUT', //审核状态
-        lastOpr: '张三', //审核人
-        lastOprTime: '2019-06-12', //审核时间
-    },
-    {
-        taskId: '233333', //作业流水号
-        userId: '233333333',
-        partyNo: '2019061120001', //客户号
-        userName: '客户', //客户姓名
-        createdAt: '2019-06-12', //生成日期
-        bizType: 'OPEN_ACCOUNT', //业务类型
-        taskStatus: 'WAIT_INPUT', //审核状态
-        lastOpr: '张三', //审核人
-        lastOprTime: '2019-06-12', //审核时间
-    },
-
-    {
-        taskId: '233333', //作业流水号
-        userId: '233333333',
-        partyNo: '2019061120001', //客户号
-        userName: '客户', //客户姓名
-        createdAt: '2019-06-12', //生成日期
-        bizType: 'OPEN_ACCOUNT', //业务类型
-        taskStatus: 'WAIT_INPUT', //审核状态
-        lastOpr: '张三', //审核人
-        lastOprTime: '2019-06-12', //审核时间
-    },
-    {
-        taskId: '233333', //作业流水号
-        userId: '233333333',
-        partyNo: '2019061120001', //客户号
-        userName: '客户', //客户姓名
-        createdAt: '2019-06-12', //生成日期
-        bizType: 'OPEN_ACCOUNT', //业务类型
-        taskStatus: 'WAIT_INPUT', //审核状态
-        lastOpr: '张三', //审核人
-        lastOprTime: '2019-06-12', //审核时间
-    },
-    {
-        taskId: '233333', //作业流水号
-        userId: '233333333',
-        partyNo: '2019061120001', //客户号
-        userName: '客户', //客户姓名
-        createdAt: '2019-06-12', //生成日期
-        bizType: 'OPEN_ACCOUNT', //业务类型
-        taskStatus: 'WAIT_INPUT', //审核状态
-        lastOpr: '张三', //审核人
-        lastOprTime: '2019-06-12', //审核时间
-    },
-    {
-        taskId: '233333', //作业流水号
-        userId: '233333333',
-        partyNo: '2019061120001', //客户号
-        userName: '客户', //客户姓名
-        createdAt: '2019-06-12', //生成日期
-        bizType: 'OPEN_ACCOUNT', //业务类型
-        taskStatus: 'WAIT_INPUT', //审核状态
-        lastOpr: '张三', //审核人
-        lastOprTime: '2019-06-12', //审核时间
-    },
-];
-
 class List extends Component {
     constructor(props) {
         super(props);
@@ -146,8 +77,8 @@ class List extends Component {
 
     componentDidMount() {
         // this.setState({ data })
-
-        getList().then((res) => {
+        let path = this.props.location.pathname.split("/")[-1]
+        getBlackList({ auditor: "L1" }).then((res) => {
             if (res.data && res.res_code === "0") {
                 this.setState({
                     data: res.data

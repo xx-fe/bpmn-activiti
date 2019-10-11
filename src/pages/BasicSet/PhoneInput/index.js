@@ -31,7 +31,7 @@ class DynamicRule extends React.Component {
                     if (res.res_code == "0") {
                         Message.destroy()
                         Message.success("提交成功")
-                        router.push(`/basicSet/list`);
+                        router.push(`/basicSet/belist`);
                     }
                 }).catch(err => {
                     console.log(err)

@@ -23,6 +23,15 @@ export async function getList(data) {
 //http://localhost:8080/activiti-demo//hk/compliance/task-list
 
 
+//黑名单列表查询:
+export async function getBlackList(data) {
+    return request({
+        url: '/hk/compliance/task-list-bl',
+        method: 'post',
+        data,
+    });
+}
+
 //审核详情查询：
 export async function getDetail(data) {
     return request({

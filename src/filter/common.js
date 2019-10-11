@@ -305,6 +305,8 @@ export function bizTypeFilter(value) {
             return "开户目的审核"
         case "HIGH_RISK_RESIDENTIAL_ADDRESS":
             return "高风险常住地址审核"
+        case "BLACKLIST_PASSIVE":
+            return "黑名单审核"
         default:
             return ""
     }

@@ -68,75 +68,7 @@ const columns = [
     // },
 ];
 
-const data = [
-    {
-        taskId: '233333', //作业流水号
-        userId: '233333333',
-        partyNo: '2019061120001', //客户号
-        userName: '客户', //客户姓名
-        createdAt: '2019-06-12', //生成日期
-        bizType: 'OPEN_ACCOUNT', //业务类型
-        taskStatus: 'WAIT_INPUT', //审核状态
-        lastOpr: '张三', //审核人
-        lastOprTime: '2019-06-12', //审核时间
-    },
-    {
-        taskId: '233333', //作业流水号
-        userId: '233333333',
-        partyNo: '2019061120001', //客户号
-        userName: '客户', //客户姓名
-        createdAt: '2019-06-12', //生成日期
-        bizType: 'OPEN_ACCOUNT', //业务类型
-        taskStatus: 'WAIT_INPUT', //审核状态
-        lastOpr: '张三', //审核人
-        lastOprTime: '2019-06-12', //审核时间
-    },
 
-    {
-        taskId: '233333', //作业流水号
-        userId: '233333333',
-        partyNo: '2019061120001', //客户号
-        userName: '客户', //客户姓名
-        createdAt: '2019-06-12', //生成日期
-        bizType: 'OPEN_ACCOUNT', //业务类型
-        taskStatus: 'WAIT_INPUT', //审核状态
-        lastOpr: '张三', //审核人
-        lastOprTime: '2019-06-12', //审核时间
-    },
-    {
-        taskId: '233333', //作业流水号
-        userId: '233333333',
-        partyNo: '2019061120001', //客户号
-        userName: '客户', //客户姓名
-        createdAt: '2019-06-12', //生成日期
-        bizType: 'OPEN_ACCOUNT', //业务类型
-        taskStatus: 'WAIT_INPUT', //审核状态
-        lastOpr: '张三', //审核人
-        lastOprTime: '2019-06-12', //审核时间
-    },
-    {
-        taskId: '233333', //作业流水号
-        userId: '233333333',
-        partyNo: '2019061120001', //客户号
-        userName: '客户', //客户姓名
-        createdAt: '2019-06-12', //生成日期
-        bizType: 'OPEN_ACCOUNT', //业务类型
-        taskStatus: 'WAIT_INPUT', //审核状态
-        lastOpr: '张三', //审核人
-        lastOprTime: '2019-06-12', //审核时间
-    },
-    {
-        taskId: '233333', //作业流水号
-        userId: '233333333',
-        partyNo: '2019061120001', //客户号
-        userName: '客户', //客户姓名
-        createdAt: '2019-06-12', //生成日期
-        bizType: 'OPEN_ACCOUNT', //业务类型
-        taskStatus: 'WAIT_INPUT', //审核状态
-        lastOpr: '张三', //审核人
-        lastOprTime: '2019-06-12', //审核时间
-    },
-];
 
 class List extends Component {
     constructor(props) {

@@ -74,7 +74,7 @@ class Bpmn extends Component {
     UNSAFE_componentWillReceiveProps(nextProps) {
         const { XML, XMLDetail, historyList } = nextProps
         this.setState({ XML, XMLDetail, historyList }, () => {
-            this.initBpmn()
+            this.initBpmn(XML, XMLDetail, historyList)
         })
     }
 
@@ -82,7 +82,7 @@ class Bpmn extends Component {
         const { XML, XMLDetail, historyList } = this.props
 
         // console.log(XML, XMLDetail, "这两个拿到了么")
-        const { callback } = this.props;
+        // const { callback } = this.props;
         this.viewer = new BpmnViewer({
             container: '#canvas',
             moddleExtensions: {
@@ -95,13 +95,14 @@ class Bpmn extends Component {
         // let xml = this.readXML();
 
         this.setState({ XML, XMLDetail, historyList }, () => {
-            this.initBpmn()
+            this.initBpmn(XML, XMLDetail, historyList)
         })
     }
 
-    initBpmn = () => {
-        const { XML, XMLDetail, historyList } = this.state
+    initBpmn = (XML, XMLDetail, historyList) => {
+        // const { XML, XMLDetail, historyList } = this.state
         // let this = this;
+        // console.log(XML, "拿到的 xml 是啥啊")
         this.viewer.importXML(XML, (err) => {
             if (err) {
                 console.error('failed to load diagram');
