@@ -1,209 +1,178 @@
+import { Table, Divider, Tag, Card } from 'antd';
+import { Link } from 'react-router-dom'
+import moment from 'moment';
+import router from 'umi/router';
 import React, { Component } from 'react';
-import 'antd/dist/antd.css';
-import {
-    Card,
-    Form,
-    Input,
-    Button,
-    Message
-} from 'antd';
-
-// import { Loading } from '@alifd/next';
 import PageHeaderWrapper from '@/components/PageHeaderWrapper';
-import Customer from '@/components/Customer';
-import { getDetail, submitCheckData, gethistoryImg, historyList } from '@/services/MVPAPI'
-import { async } from 'q';
+import { getList } from '@/services/MVPAPI'
+import { bizTypeFilter, statusFilter } from '@/filter/common';
+const columns = [
+    {
+        title: '作业流水号',
+        dataIndex: 'taskId',
+        key: 'taskId',
+        render: (text, record) => <a onClick={() => {
+            let storage = localStorage;
+            storage.taskId = record.taskId
+            storage.bizType = record.bizType
+            storage.currentAuditStatus = record.status
+            storage.userId = 3182065 // record.userId  先全部写死
+            storage.detailTitle = bizTypeFilter(record.bizType)
+            storage.currentState = statusFilter(record.taskStatus)
+            router.push(`/basicSet/pcInput`);
+        }}>
+            {text}
+        </a>
+    },
+    {
+        title: '客户名称',
+        dataIndex: 'userName',
+        key: 'userName',
+    },
+    {
+        title: '核查类型',
+        key: 'bizType',
+        dataIndex: 'bizType',
+        render: text => <div>{bizTypeFilter(text)}</div>
+    },
+    {
+        title: '核查状态',
+        key: 'taskStatus',
+        dataIndex: 'taskStatus',
+        render: text => <div>{statusFilter(text)}</div>
+    },
+    {
+        title: '生成时间',
+        key: 'createdAt',
+        dataIndex: 'createdAt',
+        render: text => <div>{moment(text).format('YYYY-MM-DD')}</div>
+    },
+    {
+        title: '审核人',
+        key: 'lastOpr',
+        dataIndex: 'lastOpr',
+    },
+    {
+        title: '审核时间',
+        key: 'lastOprTime',
+        dataIndex: 'lastOprTime',
+    },
+    // {
+    //     title: '操作',
+    //     key: 'action',
+    //     render: (text, record) => (
+    //         <span>
+    //             <a>审核</a>
+    //         </span>
+    //     ),
+    // },
+];
 
-// Bpmn 相关文件
-import BpmnViewer from '@/components/BpmnViewer';
+const data = [
+    {
+        taskId: '233333', //作业流水号
+        userId: '233333333',
+        partyNo: '2019061120001', //客户号
+        userName: '客户', //客户姓名
+        createdAt: '2019-06-12', //生成日期
+        bizType: 'OPEN_ACCOUNT', //业务类型
+        taskStatus: 'WAIT_INPUT', //审核状态
+        lastOpr: '张三', //审核人
+        lastOprTime: '2019-06-12', //审核时间
+    },
+    {
+        taskId: '233333', //作业流水号
+        userId: '233333333',
+        partyNo: '2019061120001', //客户号
+        userName: '客户', //客户姓名
+        createdAt: '2019-06-12', //生成日期
+        bizType: 'OPEN_ACCOUNT', //业务类型
+        taskStatus: 'WAIT_INPUT', //审核状态
+        lastOpr: '张三', //审核人
+        lastOprTime: '2019-06-12', //审核时间
+    },
 
-class RegistrationForm extends Component {
+    {
+        taskId: '233333', //作业流水号
+        userId: '233333333',
+        partyNo: '2019061120001', //客户号
+        userName: '客户', //客户姓名
+        createdAt: '2019-06-12', //生成日期
+        bizType: 'OPEN_ACCOUNT', //业务类型
+        taskStatus: 'WAIT_INPUT', //审核状态
+        lastOpr: '张三', //审核人
+        lastOprTime: '2019-06-12', //审核时间
+    },
+    {
+        taskId: '233333', //作业流水号
+        userId: '233333333',
+        partyNo: '2019061120001', //客户号
+        userName: '客户', //客户姓名
+        createdAt: '2019-06-12', //生成日期
+        bizType: 'OPEN_ACCOUNT', //业务类型
+        taskStatus: 'WAIT_INPUT', //审核状态
+        lastOpr: '张三', //审核人
+        lastOprTime: '2019-06-12', //审核时间
+    },
+    {
+        taskId: '233333', //作业流水号
+        userId: '233333333',
+        partyNo: '2019061120001', //客户号
+        userName: '客户', //客户姓名
+        createdAt: '2019-06-12', //生成日期
+        bizType: 'OPEN_ACCOUNT', //业务类型
+        taskStatus: 'WAIT_INPUT', //审核状态
+        lastOpr: '张三', //审核人
+        lastOprTime: '2019-06-12', //审核时间
+    },
+    {
+        taskId: '233333', //作业流水号
+        userId: '233333333',
+        partyNo: '2019061120001', //客户号
+        userName: '客户', //客户姓名
+        createdAt: '2019-06-12', //生成日期
+        bizType: 'OPEN_ACCOUNT', //业务类型
+        taskStatus: 'WAIT_INPUT', //审核状态
+        lastOpr: '张三', //审核人
+        lastOprTime: '2019-06-12', //审核时间
+    },
+];
+
+class List extends Component {
     constructor(props) {
         super(props);
-
-        this.state = {
-            customerInfo: {},
-            Loading: false,
-            detailTitle: "",   //当前的场景
-            detailInfo: {}, // 流程跟踪详情
-        };
+        this.state = { data: [], loading: true }
     }
 
-    async componentDidMount() {
-        const { taskId, bizType, taskStatus, userId, detailTitle, currentState } = localStorage
-        this.setState({ taskId, bizType, taskStatus, userId, detailTitle, currentState })
-        await this.getDetail({ taskId, bizType, taskStatus, userId })
-        this.getHistoryImg()
-        this.getHistoryList(taskId)
-    }
+    componentDidMount() {
+        // this.setState({ data })
 
-    getDetail = async (param) => {
-        await getDetail({ ...param }).then(res => {
-            if (res.data && res.res_code == "0") {
-                const { customerInfo, subProcessInstanceId } = res.data
+        getList().then((res) => {
+            if (res.data && res.res_code === "0") {
                 this.setState({
-                    customerInfo, subProcessInstanceId
+                    data: res.data
                 })
             }
+        }).catch(err => {
+            console.log(err)
+        }).finally(() => {
+            this.setState({
+                loading: false
+            })
         })
     }
 
-    getHistoryImg = () => {
-        const { subProcessInstanceId } = this.state
-        gethistoryImg(subProcessInstanceId).then(res => {
-            if (res.data && res.res_code == "0")
-                this.setState({ historyImg: res.data })
-        })
 
-    }
-
-    getHistoryList = taskId => {
-        const { subProcessInstanceId } = this.state
-        historyList({ taskId, subProcessInstanceId }).then(res => {
-
-        })
-    }
-
-    submit = result => {
-        this.props.form.validateFieldsAndScroll((err, values) => {
-            if (!err) {
-                const { taskId, bizType, taskStatus, userId } = this.state
-                Message.loading('提交中', 0)
-                submitCheckData({
-                    taskId,
-                    bizType,
-                    userId,
-                    auditor: "屎蛋",
-                    auditResult: result,
-                    remark: values.remark
-                }).then(res => {
-                    if (res.res_code == "0") {
-                        Message.destroy()
-                        Message.success("提交成功")
-                    }
-                }).catch(err => {
-                    Message.destroy()
-                    Message.error("处理异常")
-                })
-            }
-        });
-    };
-
-    renderBtn = () => {
-        const { getFieldDecorator } = this.props.form;
-        return <Card style={{ margin: "10px 0" }}>
-            <Form {...formItemLayout}>
-                <Form.Item label="审核意见">
-                    {getFieldDecorator('remark', {
-                        rules: [
-                            {
-                                required: true,
-                                message: '请输入您的审核意见',
-                            },
-                        ],
-                    })(<Input.TextArea rows={4} />)}
-                </Form.Item>
-            </Form>
-            <div style={{
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center'
-            }}>
-                <Button style={{
-                    margin: 10
-                }} type="primary" onClick={() => {
-                    this.submit("PASS")
-                }}>同意</Button>
-                <Button style={{
-                    margin: 10
-                }} type="danger" onClick={() => {
-                    this.submit("NO_PASS")
-                }}>驳回</Button>
-            </div>
-        </Card>
-    }
 
     render() {
-
-        const { customerInfo, historyImg, detailTitle, currentState, detailInfo } = this.state;
-
         return (
-            <PageHeaderWrapper title={<div>
-                <span style={{ marginRight: 40 }}>{detailTitle || ""} 审核详情</span>
-                ||
-                <span style={{ marginLeft: 40 }}>当前状态  {currentState || ""}</span>
-            </div>}>
-                <Customer customerInfo={customerInfo}></Customer>
-                {detailTitle != "已完成" && this.renderBtn()}
-                <Card style={{ margin: "10px 0" }}>
-                    <div>任务流图片</div>
-                    <div>
-                        <img src={`data:image/png;base64,${historyImg}`} />
-                    </div>
-
-                    <div>历史记录</div>
+            <PageHeaderWrapper title={'审核列表'}>
+                <Card>
+                    <Table loading={this.state.loading} columns={columns} dataSource={this.state.data} />;
                 </Card>
-                <BpmnViewer data={detailInfo} />
-
-            </PageHeaderWrapper >
+            </PageHeaderWrapper>
         );
     }
 }
 
-const WrappedRegistrationForm = Form.create({ name: 'register' })(RegistrationForm);
-export default WrappedRegistrationForm;
-
-
-const formItemLayout = {
-    labelCol: {
-        span: 4,
-    },
-    wrapperCol: {
-        span: 20,
-    },
-};
-
-
-// const customerInfo = {
-//     userId: '3182065',
-//     partyno: '216691569056763132',
-//     sex: '1',
-//     userName: '王志文',
-//     mobileNo: '18313494110',
-//     surname: '王',
-//     givenName: '志文',
-//     enName: 'Wang ZhiWen',
-//     lastName: 'Wang',
-//     firstName: 'ZhiWen',
-//     birthDate: '1992-12-12',
-//     idType: '0',
-//     idNo: '45092218248158466',
-//     idAddress: '深圳购福华三路平安金融中心-修改(大陆黑名单)',
-//     idExpireDate: '2032-12-12',
-//     taxInfoResp: [
-//         {
-//             taxNationalArea: 'CHN',
-//             taxpayerNo: '123456789',
-//         },
-//     ],
-//     nationalityCode: 'CN',
-//     nationality: '中国',
-//     countryAreaCode: 'CHN',
-//     countryArea: '中国',
-//     liveAddress: 'Cogycgkcgkckgchcgkccgkclcykclcyl',
-//     liveCountry: 'BLR',
-//     liveProvince: 'BLR',
-//     liveCity: 'HR',
-//     liveCountryDesc: '白俄罗斯',
-//     liveProvinceDesc: '白俄罗斯',
-//     liveCityDesc: '格罗德诺',
-//     careerType: '01',
-//     careerTypeDesc: '制造业',
-//     workCompany: '北京大公司',
-//     positionCode: '2401',
-//     workPosition: '制造业管理人员',
-//     netIncome: '1230000',
-//     openAccountReasonType: '1',
-//     isIdcardAddress: '0',
-//     usedNameResp: [],
-// }
+export default List;

@@ -11,6 +11,7 @@ export default {
     'menu.account.logout': '退出登录',
 
     'menu.basicSet': '基础设置',
+    'menu.l1First': '黑名单审核',
     'menu.basicSet.processManage': '流程管理',
     'menu.basicSet.processDesign': '流程设计',
     'menu.basicSet.processTrace': '流程跟踪',

@@ -63,3 +63,23 @@ export async function gethistoryImg(id) {
         method: 'get'
     })
 }
+
+
+
+
+// 流程图的详细信息
+export async function flowChartDetail(id) {
+    return request({
+        url: `/test/processImgInfo?processInstanceId=${id}`,
+        method: 'get'
+    })
+}
+
+
+// XML 文件
+export async function getXML(id) {
+    return request({
+        url: `/test/processDefineInfo?processInstanceId=${id}`,
+        method: 'get'
+    })
+}

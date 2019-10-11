@@ -1,25 +1,10 @@
-import React, {Component, Fragment} from 'react';
+import React, { Component, Fragment } from 'react';
 import BpmnViewer from 'bpmn-js';
-import {Table} from 'antd';
+import { Table } from 'antd';
 import camundaModdleDescriptor from 'camunda-bpmn-moddle/resources/camunda';
 import './index.css';
 import detailList from './mock.json';
-import {async} from 'q';
-import xmlii from './xml1.xml';
-const resJson = {
-    res_code: 0,
-    res_msg: 'success',
-    data: {
-        historyActivities: ['START', 'createBlackListTask2', 'L1_AUDIT', 'CON1', 'L2_AUDIT'],
-        flows: [
-            'SEQ1',
-            'sid-787EDF98-CF0D-4AAC-A302-05C32567F090',
-            'sid-B8959B94-53A4-435B-B408-4DA8FFB3B87C',
-            'sid-3C17C1BA-93CA-46B4-99E5-4A5F9B85FD8C',
-        ],
-        currentActivities: ['L2_AUDIT'],
-    },
-};
+import { async } from 'q';
 
 class Bpmn extends Component {
     constructor(props) {
@@ -28,6 +13,9 @@ class Bpmn extends Component {
             x: 0,
             y: 0,
             selectedId: '',
+            XML: "",
+            XMLDetail: {},
+            historyList: []
         };
 
         this.columns = [
@@ -52,13 +40,13 @@ class Bpmn extends Component {
         defs.innerHTML += strTextNode;
     }
 
-    setElements() {
+    setElements(XMLDetail) {
         let color = '';
-        const res = [...resJson.data.flows, ...resJson.data.historyActivities];
-        console.log(this.elementRegistry); //所有元素
+        const res = [...XMLDetail.flows, ...XMLDetail.historyActivities];
+        // console.log(this.elementRegistry); //所有元素
 
         this.elementRegistry.forEach((ele, gfx) => {
-            console.log('ele', ele, gfx);
+            // console.log('ele', ele, gfx);
             let type = ele.type;
             let circle = gfx.getElementsByTagName('g')[0].firstElementChild; // ! 控制背景
             let text1 = gfx.getElementsByTagName('g')[0].getElementsByTagName('tspan')[0];
@@ -67,7 +55,7 @@ class Bpmn extends Component {
             if (!res.includes(ele.id)) {
                 return;
             }
-            if (resJson.data.currentActivities.includes(ele.id)) {
+            if (XMLDetail.currentActivities.includes(ele.id)) {
                 color = 'red';
             } else {
                 color = 'green';
@@ -82,20 +70,39 @@ class Bpmn extends Component {
             circle.style.markerEnd = 'url("#sequenceflow-end")';
         });
     }
+
+    UNSAFE_componentWillReceiveProps(nextProps) {
+        const { XML, XMLDetail, historyList } = nextProps
+        this.setState({ XML, XMLDetail, historyList }, () => {
+            this.initBpmn()
+        })
+    }
+
     componentDidMount() {
-        let that = this;
-        const {callback} = this.props;
-        let viewer = new BpmnViewer({
+        const { XML, XMLDetail, historyList } = this.props
+
+        // console.log(XML, XMLDetail, "这两个拿到了么")
+        const { callback } = this.props;
+        this.viewer = new BpmnViewer({
             container: '#canvas',
             moddleExtensions: {
                 camunda: camundaModdleDescriptor,
             },
-            height: 800,
+            height: 1000,
         });
 
-        this.elementRegistry = viewer.get('elementRegistry'); // ! 获取所有元素集合
-        let xml = this.readXML();
-        viewer.importXML(xml, function(err) {
+        this.elementRegistry = this.viewer.get('elementRegistry'); // ! 获取所有元素集合
+        // let xml = this.readXML();
+
+        this.setState({ XML, XMLDetail, historyList }, () => {
+            this.initBpmn()
+        })
+    }
+
+    initBpmn = () => {
+        const { XML, XMLDetail, historyList } = this.state
+        // let this = this;
+        this.viewer.importXML(XML, (err) => {
             if (err) {
                 console.error('failed to load diagram');
                 console.error(err);
@@ -105,8 +112,8 @@ class Bpmn extends Component {
             // Option 1:
             // directly hook into internal diagram events
             // this allows you to access the clicked element directly
-            that.setElements();
-            let eventBus = viewer.get('eventBus');
+            this.setElements(XMLDetail);
+            let eventBus = this.viewer.get('eventBus');
             // you may hook into any of the following events
             let events = [
                 'element.hover',
@@ -116,20 +123,21 @@ class Bpmn extends Component {
                 // 'element.mousedown',
                 // 'element.mouseup'
             ];
-            events.forEach(function(event) {
-                eventBus.on(event, function(e) {
+            events.forEach((event) => {
+                eventBus.on(event, (e) => {
                     // console.info("划入")
-                    const {clientX, clientY} = e.originalEvent;
-                    const arr = detailList.filter(li => li.activityId == e.element.id);
+                    const { clientX, clientY } = e.originalEvent;
+                    const arr = historyList.filter(li => li.activityId == e.element.id);
                     // console.log(e.element.id, arr);
                     if (arr.length >= 1) {
-                        that.setState({
+                        console.log(e.element.id)
+                        this.setState({
                             x: clientX,
                             y: clientY,
                             selectedId: e.element.id,
                         });
                     } else {
-                        that.setState({
+                        this.setState({
                             selectedId: '',
                         });
                     }
@@ -143,95 +151,54 @@ class Bpmn extends Component {
         });
     }
 
-    readXML = () => {
-        let xml = '',
-            xmlDoc,
-            doc,
-            ele;
-        try {
-            let xmlhttp = new window.XMLHttpRequest();
-            //创建一个新的http请求，并指定此请求的方法、URL以及验证信息
-            xmlhttp.open('GET', xmlii, false);
-            // xmlhttp.setRequestHeader("Content-Type", "text/xml");
-            xmlhttp.send(null);
-            if (xmlhttp.readyState == 4) {
-                // xmlhttp.overrideMimeType("text/xml")
-                console.log(xmlhttp, '解析成了啥');
-                xmlDoc = xmlhttp.responseXML.documentElement;
-                // return xmlDoc
-                xml = new XMLSerializer().serializeToString(xmlDoc);
-
-                doc = xmlhttp.responseXML;
-                ele = doc.getElementsByTagName('bpmndi:BPMNShape');
-                console.log(ele);
-
-                for (i = 0; i < doc.length; i++) {
-                    // document.write("<div class='aaaa'>");
-                    // document.write(x[i].getElementsByTagName("to")[0].childNodes[0].nodeValue);
-                    // document.write("</div>");
-                    // document.write("<div class='aaaa'>");
-                    // document.write(x[i].getElementsByTagName("heading")[0].childNodes[0].nodeValue);
-                    // document.write("</div>");
-                    // document.write("<div class='aaaa'>");
-                    // document.write(x[i].getElementsByTagName("body")[0].childNodes[0].nodeValue);
-                    // document.write("</div>");
-                }
-            }
-        } catch (e) {
-            console.log(e);
-        }
-        return xml;
-
-        //暂时不考虑 IE
-        // let xmlDoc;
-        // try { //IE浏览器
-        //     xmlDoc = new ActiveXObject("Microsoft.XMLDOM");
-        // } catch (e) { //firefox,opera...火狐、欧朋等浏览器
-        //     xmlDoc = document.implementation.createDocument("", "", null);
-        // }
-        // try {
-        //     xmlDoc.asyc = false; //是否异步调用
-        //     xmlDoc.load("./xml.xml"); //文件路径
-        // } catch (e) {  //chrome
-
-        // }
-    };
-
     render() {
-        const {x, y, selectedId} = this.state;
-        const detailArr = detailList.filter(v => v.activityId == selectedId);
-        console.log(detailArr.length >= 1 && selectedId);
+        const { x, y, selectedId, historyList } = this.state;
+        const detailArr = historyList.filter(v => v.activityId == selectedId);
+        // console.log(detailArr.length >= 1 && selectedId);
         return (
-            <div style={{display: 'flex', justifyContent: 'space-between'}}>
-                <div id="canvas" style={{height: '100%', position: 'relative', width: '100%'}}>
+            <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                <div id="canvas" style={{ height: '100%', position: 'relative', width: '100%' }}>
                     <div
                         style={{
                             position: 'fixed',
-                            left: x,
-                            top: y - 200,
-                            width: 400,
-                            height: 200,
-                            border: '4px red solid',
-                            zIndex: 99,
+                            borderRadius: 10,
+                            padding: 10,
                             display: detailArr.length >= 1 && selectedId ? 'block' : 'none',
-                        }}
-                    >
-                        {detailArr.map((v, index) => {
+                            opacity: 0.8,
+                            left: x,
+                            top: y - 270,
+                            width: 500,
+                            height: 250,
+                            backgroundColor: "#fff",
+                            boxShadow: "2px 2px 5px #333333",
+                            zIndex: 999
+                        }}>
+                        {detailArr.map((li, index) => {
                             return (
-                                <ul key={index}>
-                                    <li>
-                                        {v.startTime}&nbsp;&nbsp;&nbsp;&nbsp;{v.activityName}
-                                        &nbsp;&nbsp;&nbsp;&nbsp;
-                                        {v.mark}
-                                    </li>
-                                </ul>
+                                <div key={index}>
+                                    <div>
+                                        <div> <span >{index + 1}.</span> &nbsp;&nbsp;{li.time}</div>
+                                        <div>  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{li.fullMessage}</div>
+                                    </div>
+                                </div>
                             );
                         })}
                     </div>
-
-                    {/* <div style={{ position: "absolute", right: 0, top: 0, zIndex: 9 }}>
-
-                    </div> */}
+                </div>
+                <div>
+                    {historyList.map((li, index) => {
+                        return <div ket={index} style={{
+                            margin: "10px 0",
+                            padding: "5px 10px",
+                            minWidth: 300,
+                            background: li.activityId == selectedId ? "#E6F7FF" : "",
+                            border: li.activityId == selectedId ? "solid #91D5FF 1px" : "",
+                            borderRadius: 10
+                        }}>
+                            <div> <span >{index + 1}.</span> &nbsp;&nbsp;{li.time}</div>
+                            <div>  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{li.fullMessage}</div>
+                        </div>
+                    })}
                 </div>
                 {/* <Table
                     columns={this.columns}
