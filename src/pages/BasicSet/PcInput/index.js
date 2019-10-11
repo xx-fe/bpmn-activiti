@@ -27,6 +27,7 @@ class RegistrationForm extends Component {
     constructor(props) {
         super(props);
         this.state = {
+            currentAuditStatus:'',
             customerInfo: {},
             Loading: false,
             sessionImg: "",  //子流程图片
@@ -59,6 +60,10 @@ class RegistrationForm extends Component {
         // this.getTotalImg()
         await this.getDetail({ taskId, bizType, taskStatus, userId })
         // this.getHistoryImg()
+        this.init()
+    }
+
+    init = () =>{
         this.getHistoryList()
         this.getFlowChartDetail()
         this.getXMLFile()
@@ -73,9 +78,9 @@ class RegistrationForm extends Component {
     getDetail = async (param) => {
         await getDetail({ ...param }).then(res => {
             if (res.data && res.res_code == "0") {
-                const { customerInfo, subProcessInstanceId } = res.data
+                const { customerInfo, subProcessInstanceId,currentAuditStatus } = res.data
                 this.setState({
-                    customerInfo, subProcessInstanceId
+                    customerInfo, subProcessInstanceId,currentAuditStatus
                 })
             }
         })
@@ -178,7 +183,7 @@ class RegistrationForm extends Component {
                     taskId,
                     bizType,
                     userId,
-                    auditor: "屎蛋",
+                    auditor: "陆陆",
                     auditResult: result,
                     remark: values.remark
                 }).then(res => {
@@ -190,16 +195,21 @@ class RegistrationForm extends Component {
                     Message.destroy()
                     Message.error("处理异常")
                 }).finally(e => {
-                    // this.getHistoryImg()
-                    this.getHistoryList()
-                    this.getFlowChartDetail()
+                    // // this.getHistoryImg()
+                    // this.getHistoryList()
+                    // this.getFlowChartDetail()
+                    this.init()
                 })
             }
         });
     };
 
     renderBtn = () => {
+        const {currentAuditStatus} = this.state
         const { getFieldDecorator } = this.props.form;
+        if(currentAuditStatus === 'FINISH'){
+            return null
+        }
         return <Card style={{ margin: "10px 0" }}>
             <Form {...formItemLayout}>
                 <Form.Item label="审核意见">
@@ -222,12 +232,12 @@ class RegistrationForm extends Component {
                     margin: 10
                 }} type="primary" onClick={() => {
                     this.submit("PASS")
-                }}>同意</Button>
+                }}>通过</Button>
                 <Button style={{
                     margin: 10
                 }} type="danger" onClick={() => {
                     this.submit("NO_PASS")
-                }}>驳回</Button>
+                }}>不通过</Button>
             </div>
         </Card>
     }
@@ -246,7 +256,7 @@ class RegistrationForm extends Component {
                 }} >
                     <TabPane tab="审核详情" key="1" >
                         <Customer customerInfo={customerInfo}></Customer>
-                        {detailTitle != "已完成" && this.renderBtn()}
+                        {this.renderBtn()}
                     </TabPane>
                     <TabPane tab="子任务操作记录" key="2" >
                         <Card>
@@ -285,7 +295,7 @@ class RegistrationForm extends Component {
                 </Row>
                 {historyImg && <Canvas src={`data:image/png;base64,${historyImg}`} />} */}
 
-                {/* 
+                {/*
                 <div>任务流图片</div>
                 <div>
                     {historyImg && < Canvas src={`data:image/png;base64,${historyImg}`} />}

@@ -122,7 +122,7 @@ class RegistrationForm extends Component {
                     taskId,
                     bizType,
                     userId,
-                    auditor: "屎蛋",
+                    auditor: "陆陆",
                     auditResult: result,
                     remark: values.remark
                 }).then(res => {

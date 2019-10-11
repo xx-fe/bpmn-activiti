@@ -88,7 +88,7 @@ class Bpmn extends Component {
             moddleExtensions: {
                 camunda: camundaModdleDescriptor,
             },
-            height: 1000,
+            height: 800,
         });
 
         this.elementRegistry = this.viewer.get('elementRegistry'); // ! 获取所有元素集合
