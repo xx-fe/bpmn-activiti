@@ -1,11 +1,10 @@
-import React, { Component, Fragment } from 'react';
+import React, { Component } from 'react';
 import BpmnViewer from 'bpmn-js';
 import { Table } from 'antd';
 import camundaModdleDescriptor from 'camunda-bpmn-moddle/resources/camunda';
 import './index.css';
 import detailList from './mock.json';
-import { async } from 'q';
-
+import { readXML } from '@/utils/utils'
 class Bpmn extends Component {
     constructor(props) {
         super(props);
@@ -15,7 +14,7 @@ class Bpmn extends Component {
             selectedId: '',
             XML: "",
             XMLDetail: {},
-            historyList: []
+            historyList: detailList
         };
 
         this.columns = [
@@ -41,66 +40,125 @@ class Bpmn extends Component {
     }
 
     setElements(XMLDetail) {
+        const overlays = this.viewer.get('overlays');
         let color = '';
-        const res = [...XMLDetail.flows, ...XMLDetail.historyActivities];
-        // console.log(this.elementRegistry); //所有元素
-
+        // const res = [...XMLDetail.flows, ...XMLDetail.historyActivities];
+        const res = ['sid-8AB4A7F3-C5E5-4D64-A5CE-68E97E438550']
         this.elementRegistry.forEach((ele, gfx) => {
             // console.log('ele', ele, gfx);
-            let type = ele.type;
-            let circle = gfx.getElementsByTagName('g')[0].firstElementChild; // ! 控制背景
-            let text1 = gfx.getElementsByTagName('g')[0].getElementsByTagName('tspan')[0];
-            let texts = gfx.getElementsByTagName('g')[0].getElementsByTagName('tspan');
+            // let type = ele.type;
+            // let circle = gfx.getElementsByTagName('g')[0].firstElementChild; // ! 控制背景
+            // let text1 = gfx.getElementsByTagName('g')[0].getElementsByTagName('tspan')[0];
+            // let texts = gfx.getElementsByTagName('g')[0].getElementsByTagName('tspan');
 
-            if (!res.includes(ele.id)) {
-                return;
-            }
-            if (XMLDetail.currentActivities.includes(ele.id)) {
-                color = 'red';
-            } else {
-                color = 'green';
-            }
+            // if (!res.includes(ele.id)) {
+            //     return;
+            // }
+            // color = 'green';
+            // // if (XMLDetail.currentActivities.includes(ele.id)) {
+            // //     color = 'red';
+            // // } else {
+            // //     color = 'green';
+            // // }
 
-            this.setArrow();
+            // this.setArrow();
 
-            for (let i = 0; i < texts.length; i++) {
-                texts[i].style.fill = color;
-            }
-            circle.style.stroke = color;
-            circle.style.markerEnd = 'url("#sequenceflow-end")';
+            // for (let i = 0; i < texts.length; i++) {
+            //     texts[i].style.fill = color;
+            // }
+            // const dom = circle.cloneNode(true)
+            // dom.style.stroke = "red";
+
+            // circle.style.stroke = color;
+            // circle.style.markerEnd = 'url("#sequenceflow-end")';
         });
+
+        let contentArr = ['a', 'b', 'c'].map(li => ` <div
+                class="box" 
+                id="${li}"
+                style="
+                    margin-right: 20px;
+                    width:20px;
+                    height: 20px;
+                    line-height: 20px;
+                    text-align: center;
+                    background: greenyellow;
+                    color: red;
+                    border-radius: 50%;">
+                    ${li}
+                </div>`)
+
+        let dom = this.parseDom(`<div id="test" style="display:flex;z-index: 998;">
+               ${contentArr.reduce((total, string) => total + string)}
+            </div>`)
+        // overlays.add(res[0], 'note', {
+        //     position: {
+        //         top: 10,
+        //         right: -20
+        //     },
+        //     html: dom
+        // });
+        const { historyList } = this.state
+        // document.getElementById("test").addEventListener("mouseover", (e) => {
+        //     e.preventDefault()
+        //     console.log(e, "hover")
+        //     const { clientX, clientY } = e
+        //     const arr = historyList.filter(li => li.activityId == e.target.id);
+        //     if (arr.length >= 1) {
+        //         this.setState({
+        //             x: clientX,
+        //             y: clientY,
+        //             selectedId: e.target.id,
+        //         });
+        //     } else {
+        //         this.setState({
+        //             selectedId: '',
+        //         });
+        //     }
+        // });
+        // document.getElementById("test").addEventListener("mouseout", (e) => {
+        //     e.preventDefault()
+        //     this.setState({
+        //         selectedId: '',
+        //     });
+        // })
+
     }
 
-    UNSAFE_componentWillReceiveProps(nextProps) {
-        const { XML, XMLDetail, historyList } = nextProps
-        this.setState({ XML, XMLDetail, historyList }, () => {
-            this.initBpmn(XML, XMLDetail, historyList)
-        })
-    }
+    // UNSAFE_componentWillReceiveProps(nextProps) {
+    //     const { XML, XMLDetail, historyList } = nextProps
+    //     this.setState({ XML, XMLDetail, historyList }, () => {
+    //         this.initBpmn(XML, XMLDetail, historyList)
+    //     })
+    // }
 
     componentDidMount() {
-        const { XML, XMLDetail, historyList } = this.props
-
-        // console.log(XML, XMLDetail, "这两个拿到了么")
+        // const { XML, XMLDetail, historyList } = this.props
+        const xml = readXML()
+        // console.log(xml, XMLDetail, "这两个拿到了么")
         // const { callback } = this.props;
         this.viewer = new BpmnViewer({
             container: '#canvas',
             moddleExtensions: {
                 camunda: camundaModdleDescriptor,
+
             },
+            // keyboard: {
+            //     bindTo: window
+            // },
             height: 1000,
         });
 
         this.elementRegistry = this.viewer.get('elementRegistry'); // ! 获取所有元素集合
         // let xml = this.readXML();
 
-        this.setState({ XML, XMLDetail, historyList }, () => {
-            this.initBpmn(XML, XMLDetail, historyList)
+        this.setState({ xml, XMLDetail: [] }, () => {
+            this.initBpmn(xml, [], [])
         })
     }
 
-    initBpmn = (XML, XMLDetail, historyList) => {
-        // const { XML, XMLDetail, historyList } = this.state
+    initBpmn = (XML, XMLDetail) => {
+        const { historyList } = this.state
         // let this = this;
         // console.log(XML, "拿到的 xml 是啥啊")
         this.viewer.importXML(XML, (err) => {
@@ -113,7 +171,9 @@ class Bpmn extends Component {
             // Option 1:
             // directly hook into internal diagram events
             // this allows you to access the clicked element directly
+
             this.setElements(XMLDetail);
+
             let eventBus = this.viewer.get('eventBus');
             // you may hook into any of the following events
             let events = [
@@ -126,12 +186,10 @@ class Bpmn extends Component {
             ];
             events.forEach((event) => {
                 eventBus.on(event, (e) => {
-                    // console.info("划入")
+                    console.log(e.element.id)
                     const { clientX, clientY } = e.originalEvent;
                     const arr = historyList.filter(li => li.activityId == e.element.id);
-                    // console.log(e.element.id, arr);
                     if (arr.length >= 1) {
-                        console.log(e.element.id)
                         this.setState({
                             x: clientX,
                             y: clientY,
@@ -144,12 +202,24 @@ class Bpmn extends Component {
                     }
                 });
             });
+
+            const canvas = this.viewer.get('canvas');
+            canvas.zoom('fit-viewport');
+
             // 删除 bpmn logo
             const bjsIoLogo = document.querySelector('.bjs-powered-by');
             while (bjsIoLogo.firstChild) {
                 bjsIoLogo.removeChild(bjsIoLogo.firstChild);
             }
+
+
         });
+    }
+
+    parseDom = (arg) => {
+        let objE = document.createElement("div");
+        objE.innerHTML = arg;
+        return objE.childNodes[0];
     }
 
     render() {

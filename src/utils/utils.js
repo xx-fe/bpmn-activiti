@@ -216,29 +216,29 @@ export const importCDN = (url, name) =>
 
 
 export const readXML = (url) => {
-    let xml = "", xmlDoc, doc, ele;
+    let xml = "", xmlDoc, doc, ele, res;
     try {
         let xmlhttp = new window.XMLHttpRequest();
         //创建一个新的http请求，并指定此请求的方法、URL以及验证信息
-        xmlhttp.open("GET", "http://192.168.73.48:8009/xml.xml", false);
+        xmlhttp.open("GET", "http://192.168.77.65:8010/xml.xml", false);
         // xmlhttp.setRequestHeader("Content-Type", "text/xml");
         xmlhttp.send(null);
         if (xmlhttp.readyState == 4) {
             // xmlhttp.overrideMimeType("text/xml")
-            console.log(xmlhttp, "解析成了啥")
+            // console.log(xmlhttp, "解析成了啥")
             xmlDoc = xmlhttp.responseXML.documentElement;
             // return xmlDoc
+            res = xmlhttp.response;
             xml = (new XMLSerializer()).serializeToString(xmlDoc)
 
             doc = xmlhttp.responseXML
             ele = doc.getElementsByTagName("bpmndi:BPMNShape")
-  
 
         }
     } catch (e) {
         console.log(e)
     }
-    return ele
+    return res
 
     //暂时不考虑 IE
     // let xmlDoc;

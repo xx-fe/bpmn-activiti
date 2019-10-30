@@ -56,15 +56,15 @@ class RegistrationForm extends Component {
     async componentDidMount() {
         const { taskId, bizType, taskStatus, userId, detailTitle, currentState } = localStorage
         this.setState({ taskId, bizType, taskStatus, userId, detailTitle, currentState })
-        // this.getTotalImg()
-        await this.getDetail({ taskId, bizType, taskStatus, userId })
-        // this.getHistoryImg()
-        this.getHistoryList()
-        this.getFlowChartDetail()
-        this.getXMLFile()
-        // const ele = readXML()
-        // console.log(ele)
 
+        // await this.getDetail({ taskId, bizType, taskStatus, userId })
+
+        //当前任务相关信息
+        // this.getHistoryList()
+        // this.getFlowChartDetail()
+        // this.getXMLFile()
+
+        //主流程相关信息
         this.getMainProcessXML()
         this.getMainProcessDetail()
         this.getMainHistoryList()
@@ -159,14 +159,18 @@ class RegistrationForm extends Component {
     }
 
     getMainProcessXML = () => {
-        const { processInstanceId } = this.state.customerInfo
-        getXML(processInstanceId).then(res => {
-            if (res.data) {
-                this.setState({
-                    mainXML: res.data
-                })
-            }
-        })
+        // const { processInstanceId } = this.state.customerInfo
+        // getXML(processInstanceId).then(res => {
+        //     if (res.data) {
+        //         this.setState({
+        //             mainXML: res.data
+        //         })
+        //     }
+        // })
+        // console.log(readXML(), "这是啥")
+        // this.setState({
+        //     mainXML: readXML()
+        // })
     }
 
     submit = result => {
@@ -235,7 +239,7 @@ class RegistrationForm extends Component {
     }
 
     render() {
-        const { customerInfo, historyImg, detailTitle, currentState, activeKey, detailInfo, sessionImg, listData, XMLDetail, XML, mainXMLDetail, mainXML, mainListData } = this.state;
+        const { customerInfo, detailTitle, currentState, activeKey, listData, XMLDetail, XML, mainXMLDetail, mainXML, mainListData } = this.state;
         return (
             <PageHeaderWrapper title={<div>
                 <span style={{ marginRight: 40 }}>{detailTitle || ""} 审核详情</span>
@@ -246,55 +250,24 @@ class RegistrationForm extends Component {
                     this.setState({ activeKey })
 
                 }} >
-                    <TabPane tab="审核详情" key="1" >
+                    {/* <TabPane tab="审核详情" key="1" >
                         <Customer customerInfo={customerInfo}></Customer>
                         {detailTitle != "已完成" && this.renderBtn()}
-                    </TabPane>
-                    <TabPane tab="子任务操作记录" key="2" >
+                    </TabPane> */}
+                    {/* <TabPane tab="子任务操作记录" key="2" >
                         <Card>
                             {activeKey == "2" && XML && XMLDetail && <BpmnViewer historyList={listData} XML={XML} XMLDetail={XMLDetail} />}
                         </Card>
-                    </TabPane>
+                    </TabPane> */}
                     <TabPane tab="主流程操作记录" key="3" >
                         <Card>
-                            {activeKey == "3" && mainXMLDetail && mainXML && <BpmnViewer historyList={mainListData} XML={mainXML} XMLDetail={mainXMLDetail} />}
+                            <BpmnViewer
+                                historyList={mainListData}
+                                XML={mainXML}
+                                XMLDetail={mainXMLDetail} />
                         </Card>
                     </TabPane>
                 </Tabs>
-
-                {/* <Row gutter={24} style={{ margin: "10px 0" }}>
-                    <Col span={12} style={{ margin: "10px 0" }}>
-                        <Card>
-                            <img style={{
-                                width: "80%"
-                            }} src={`data:image/png;base64,${sessionImg}`} />
-                        </Card>
-                    </Col>
-                    <Col span={12}>
-                        <Card style={{ margin: "10px 0" }}>
-                            <h2 style={{
-
-                            }}>历史记录</h2>
-                            {listData.map((li, index) => {
-                                return <div style={{
-
-                                }}>
-                                    {li.time}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{li.fullMessage}
-                                </div>
-                            })}
-                        </Card>
-                    </Col>
-                </Row>
-                {historyImg && <Canvas src={`data:image/png;base64,${historyImg}`} />} */}
-
-                {/* 
-                <div>任务流图片</div>
-                <div>
-                    {historyImg && < Canvas src={`data:image/png;base64,${historyImg}`} />}
-                </div>
-                <Card style={{ margin: "10px 0" }}>
-                    <div>历史记录</div>
-                </Card> */}
             </PageHeaderWrapper >
         );
     }

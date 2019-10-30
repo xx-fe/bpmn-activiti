@@ -6,7 +6,7 @@
 module.exports = {
     root: true,
     parser: 'babel-eslint',
-    extends: ['eslint:recommended', 'plugin:react/recommended'], //默认用推荐配置
+    // extends: ['eslint:recommended', 'plugin:react/recommended'], //默认用推荐配置
     env: {
         browser: true,
         es6: true,
