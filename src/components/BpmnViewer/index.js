@@ -1,10 +1,12 @@
 import React, { Component } from 'react';
 import BpmnViewer from 'bpmn-js';
-import { Table } from 'antd';
+import { Table, Button, Slider } from 'antd';
 import camundaModdleDescriptor from 'camunda-bpmn-moddle/resources/camunda';
-import './index.css';
-import detailList from './mock.json';
+import modeling from 'bpmn-js/lib/features/modeling'
+import './index.scss';
+import detailList from './blackListMock.json';
 import { readXML } from '@/utils/utils'
+import { async } from 'q';
 class Bpmn extends Component {
     constructor(props) {
         super(props);
@@ -14,7 +16,8 @@ class Bpmn extends Component {
             selectedId: '',
             XML: "",
             XMLDetail: {},
-            historyList: detailList
+            historyList: detailList,
+            speed: 300
         };
 
         this.columns = [
@@ -40,57 +43,54 @@ class Bpmn extends Component {
     }
 
     setElements(XMLDetail) {
-        const overlays = this.viewer.get('overlays');
+        const { speed } = this.state
         let color = '';
         // const res = [...XMLDetail.flows, ...XMLDetail.historyActivities];
-        const res = ['sid-8AB4A7F3-C5E5-4D64-A5CE-68E97E438550']
-        this.elementRegistry.forEach((ele, gfx) => {
-            // console.log('ele', ele, gfx);
-            // let type = ele.type;
-            // let circle = gfx.getElementsByTagName('g')[0].firstElementChild; // ! 控制背景
-            // let text1 = gfx.getElementsByTagName('g')[0].getElementsByTagName('tspan')[0];
-            // let texts = gfx.getElementsByTagName('g')[0].getElementsByTagName('tspan');
 
-            // if (!res.includes(ele.id)) {
-            //     return;
-            // }
-            // color = 'green';
-            // // if (XMLDetail.currentActivities.includes(ele.id)) {
-            // //     color = 'red';
-            // // } else {
-            // //     color = 'green';
-            // // }
+        // const element1 = this.elementRegistry.get("L1_AUDIT")
+        // const elementsToColor = [element1];
 
-            // this.setArrow();
+        const elementsToColor = res.map(li => this.elementRegistry.get(li))
+        // const time = 100;
+        elementsToColor.map((li, i) => {
+            let color = "";
+            if (i == elementsToColor.length - 1) {
+                color = "red";
+            } else {
+                color = "green";
+            }
+            setTimeout(() => {
+                this.modeling.setColor([li], {
+                    stroke: "yellow",
+                    // fill: 'yellow'
+                });
+            }, i * speed + 200);
+            setTimeout(() => {
+                this.modeling.setColor([li], {
+                    stroke: color,
+                    // fill: 'yellow'
+                });
+            }, (i + 1) * speed + 200);
+        })
 
-            // for (let i = 0; i < texts.length; i++) {
-            //     texts[i].style.fill = color;
-            // }
-            // const dom = circle.cloneNode(true)
-            // dom.style.stroke = "red";
+        // let contentArr = ['a', 'b', 'c'].map(li => `<div
+        //         class="box" 
+        //         id="${li}"
+        //         style="
+        //             margin-right: 20px;
+        //             width:20px;
+        //             height: 20px;
+        //             line-height: 20px;
+        //             text-align: center;
+        //             background: greenyellow;
+        //             color: red;
+        //             border-radius: 50%;">
+        //             ${li}
+        //         </div>`)
 
-            // circle.style.stroke = color;
-            // circle.style.markerEnd = 'url("#sequenceflow-end")';
-        });
-
-        let contentArr = ['a', 'b', 'c'].map(li => ` <div
-                class="box" 
-                id="${li}"
-                style="
-                    margin-right: 20px;
-                    width:20px;
-                    height: 20px;
-                    line-height: 20px;
-                    text-align: center;
-                    background: greenyellow;
-                    color: red;
-                    border-radius: 50%;">
-                    ${li}
-                </div>`)
-
-        let dom = this.parseDom(`<div id="test" style="display:flex;z-index: 998;">
-               ${contentArr.reduce((total, string) => total + string)}
-            </div>`)
+        // let dom = this.parseDom(`<div id="test" style="display:flex;z-index: 998;">
+        //        ${contentArr.reduce((total, string) => total + string)}
+        //     </div>`)
         // overlays.add(res[0], 'note', {
         //     position: {
         //         top: 10,
@@ -98,7 +98,7 @@ class Bpmn extends Component {
         //     },
         //     html: dom
         // });
-        const { historyList } = this.state
+        // const { historyList } = this.state
         // document.getElementById("test").addEventListener("mouseover", (e) => {
         //     e.preventDefault()
         //     console.log(e, "hover")
@@ -125,13 +125,6 @@ class Bpmn extends Component {
 
     }
 
-    // UNSAFE_componentWillReceiveProps(nextProps) {
-    //     const { XML, XMLDetail, historyList } = nextProps
-    //     this.setState({ XML, XMLDetail, historyList }, () => {
-    //         this.initBpmn(XML, XMLDetail, historyList)
-    //     })
-    // }
-
     componentDidMount() {
         // const { XML, XMLDetail, historyList } = this.props
         const xml = readXML()
@@ -139,18 +132,28 @@ class Bpmn extends Component {
         // const { callback } = this.props;
         this.viewer = new BpmnViewer({
             container: '#canvas',
-            moddleExtensions: {
-                camunda: camundaModdleDescriptor,
+            additionalModules: [modeling],
+            // moddleExtensions: {
+            //     camunda: camundaModdleDescriptor,
 
-            },
+            // },
             // keyboard: {
             //     bindTo: window
             // },
             height: 1000,
         });
-
+        //ele 集合
         this.elementRegistry = this.viewer.get('elementRegistry'); // ! 获取所有元素集合
-        // let xml = this.readXML();
+
+        //更改ele大小 颜色
+        this.modeling = this.viewer.get('modeling');
+        console.log(this.modeling, "咋肥四")
+
+        //操作 layout 辅助文本的添加变更
+        this.overlays = this.viewer.get('overlays');
+
+        //容器 可以给 ele 标记
+        this.canvas = this.viewer.get('canvas');
 
         this.setState({ xml, XMLDetail: [] }, () => {
             this.initBpmn(xml, [], [])
@@ -173,7 +176,6 @@ class Bpmn extends Component {
             // this allows you to access the clicked element directly
 
             this.setElements(XMLDetail);
-
             let eventBus = this.viewer.get('eventBus');
             // you may hook into any of the following events
             let events = [
@@ -203,16 +205,14 @@ class Bpmn extends Component {
                 });
             });
 
-            const canvas = this.viewer.get('canvas');
-            canvas.zoom('fit-viewport');
+            this.canvas.zoom('fit-viewport');
+            // canvas.addMarker('L1_AUDIT', 'highlight');
 
             // 删除 bpmn logo
             const bjsIoLogo = document.querySelector('.bjs-powered-by');
             while (bjsIoLogo.firstChild) {
                 bjsIoLogo.removeChild(bjsIoLogo.firstChild);
             }
-
-
         });
     }
 
@@ -221,6 +221,17 @@ class Bpmn extends Component {
         objE.innerHTML = arg;
         return objE.childNodes[0];
     }
+
+    play = () => {
+        this.setElements()
+    }
+
+    onChange = value => {
+        console.log(value)
+        this.setState({
+            speed: (100 - value) * 4,
+        });
+    };
 
     render() {
         const { x, y, selectedId, historyList } = this.state;
@@ -270,6 +281,13 @@ class Bpmn extends Component {
                             <div>  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{li.fullMessage}</div>
                         </div>
                     })}
+                    <Button type="primary" onClick={this.play}>播放</Button>
+                    <Slider
+                        step={null}
+                        defaultValue={25}
+                        marks={marks}
+                        onChange={this.onChange} />
+
                 </div>
                 {/* <Table
                     columns={this.columns}
@@ -280,3 +298,35 @@ class Bpmn extends Component {
     }
 }
 export default Bpmn;
+
+const marks = {
+    25: '慢',
+    50: '中',
+    75: '快',
+    100: {
+        style: {
+            color: '#f50',
+        },
+        label: <strong>极快</strong>,
+    },
+};
+
+const res = [
+    'START',
+    'SEQ1',
+    'createBlackListTask2',
+    'sid-787EDF98-CF0D-4AAC-A302-05C32567F090',
+    'L1_AUDIT',
+    'sid-B8959B94-53A4-435B-B408-4DA8FFB3B87C',
+    'CON1',
+    'sid-CC5AD9DE-37B4-40AE-B7CB-2F66E5A20DF7',
+    'L1_REVIEW',
+    'sid-5EF32400-BB8D-4DD8-99B9-705E6C461F4F',
+    'sid-6FE1C297-EE0C-4A68-8336-7B3FDFD95C23',
+    'sid-C7803D10-41ED-4901-A41A-770FB49A3D91',
+    'L1_AUDIT',
+    'sid-B8959B94-53A4-435B-B408-4DA8FFB3B87C',
+    'CON1',
+    'sid-CC5AD9DE-37B4-40AE-B7CB-2F66E5A20DF7',
+    'L1_REVIEW',
+]

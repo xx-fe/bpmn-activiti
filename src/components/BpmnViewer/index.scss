@@ -1,0 +1,11 @@
+@import "~bpmn-js/dist/assets/diagram-js.css";
+@import "~bpmn-js/dist/assets/bpmn-font/css/bpmn-embedded.css";
+
+.bjs-powered-by {
+  display: none;
+  margin-right: 20px;
+}
+
+.highlight:not(.djs-connection) .djs-visual > :nth-child(1) {
+  stroke: green !important; /* color elements as green */
+}

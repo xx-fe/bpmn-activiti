@@ -1,0 +1,28 @@
+[
+  {
+    "activityId": "a",
+    "fullMessage": "消息启动",
+    "activityType": "messageStartEvent",
+    "executionId": "200001",
+    "tenantId": "",
+    "id": "200002",
+    "processInstanceId": "200001",
+    "processDefinitionId": "process:2:165104",
+    "time": "2019-10-08 10:23:53",
+    "endTime": "2019-10-08 10:23:53",
+    "durationInMillis": 71
+  },
+  {
+    "activityId": "b",
+    "fullMessage": "风险定级",
+    "activityType": "serviceTask",
+    "executionId": "200001",
+    "tenantId": "",
+    "id": "200004",
+    "processInstanceId": "200001",
+    "processDefinitionId": "process:2:165104",
+    "time": "2019-10-08 10:23:53",
+    "endTime": "2019-10-08 10:23:53",
+    "durationInMillis": 15
+  }
+]
