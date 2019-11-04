@@ -6,7 +6,6 @@ import modeling from 'bpmn-js/lib/features/modeling'
 import './index.scss';
 import detailList from './blackListMock.json';
 import { readXML } from '@/utils/utils'
-import { async } from 'q';
 class Bpmn extends Component {
     constructor(props) {
         super(props);
@@ -14,10 +13,13 @@ class Bpmn extends Component {
             x: 0,
             y: 0,
             selectedId: '',
+            selectedArr: [],
+            selectedIndex: 0,
             XML: "",
             XMLDetail: {},
             historyList: detailList,
-            speed: 300
+            speed: 300,
+            btn: false
         };
 
         this.columns = [
@@ -36,43 +38,15 @@ class Bpmn extends Component {
         ];
     }
 
-    setArrow() {
-        const strTextNode = `<marker id="sequenceflow-end" viewBox="0 0 20 20" refX="11" refY="10" markerWidth="10" markerHeight="10" orient="auto"><path d="M 1 5 L 11 10 L 1 15 Z" style="fill: green; stroke-width: 1px; stroke-linecap: round; stroke-dasharray: 10000, 1; stroke: green;"></path></marker>`;
+    setArrow = () => {
+        const strTextNode = `<marker id="sequenceflow-end-white-black-d3snqpn30vjfa9mixcmzzeg8t" viewBox="0 0 20 20" refX="30" refY="10" markerWidth="20" markerHeight="10" orient="auto"><path d="M 1 5 L 11 10 L 1 15 Z" style="fill: black; stroke-width: 1px; stroke-linecap: round; stroke-dasharray: 10000, 1; stroke: black;"></path><circle class="demo2" id="J_progress_bar" cx="20" cy="10" r="9" fill="white" stroke="black" stroke-width="1" <="" marker=""></circle></marker>`;
         let defs = document.getElementsByTagName('defs')[0];
         defs.innerHTML += strTextNode;
     }
 
     setElements(XMLDetail) {
-        const { speed } = this.state
-        let color = '';
-        // const res = [...XMLDetail.flows, ...XMLDetail.historyActivities];
 
-        // const element1 = this.elementRegistry.get("L1_AUDIT")
-        // const elementsToColor = [element1];
-
-        const elementsToColor = res.map(li => this.elementRegistry.get(li))
-        // const time = 100;
-        elementsToColor.map((li, i) => {
-            let color = "";
-            if (i == elementsToColor.length - 1) {
-                color = "red";
-            } else {
-                color = "green";
-            }
-            setTimeout(() => {
-                this.modeling.setColor([li], {
-                    stroke: "yellow",
-                    // fill: 'yellow'
-                });
-            }, i * speed + 200);
-            setTimeout(() => {
-                this.modeling.setColor([li], {
-                    stroke: color,
-                    // fill: 'yellow'
-                });
-            }, (i + 1) * speed + 200);
-        })
-
+        this.setArrow()
         // let contentArr = ['a', 'b', 'c'].map(li => `<div
         //         class="box" 
         //         id="${li}"
@@ -135,19 +109,18 @@ class Bpmn extends Component {
             additionalModules: [modeling],
             // moddleExtensions: {
             //     camunda: camundaModdleDescriptor,
-
             // },
             // keyboard: {
             //     bindTo: window
             // },
-            height: 1000,
+            height: 600,
         });
         //ele 集合
         this.elementRegistry = this.viewer.get('elementRegistry'); // ! 获取所有元素集合
 
         //更改ele大小 颜色
         this.modeling = this.viewer.get('modeling');
-        console.log(this.modeling, "咋肥四")
+        // console.log(this.modeling, "咋肥四")
 
         //操作 layout 辅助文本的添加变更
         this.overlays = this.viewer.get('overlays');
@@ -155,13 +128,15 @@ class Bpmn extends Component {
         //容器 可以给 ele 标记
         this.canvas = this.viewer.get('canvas');
 
+        //更新 ele
+        this.bpmnUpdater = this.viewer.get('bpmnUpdater');
+
         this.setState({ xml, XMLDetail: [] }, () => {
             this.initBpmn(xml, [], [])
         })
     }
 
     initBpmn = (XML, XMLDetail) => {
-        const { historyList } = this.state
         // let this = this;
         // console.log(XML, "拿到的 xml 是啥啊")
         this.viewer.importXML(XML, (err) => {
@@ -179,9 +154,9 @@ class Bpmn extends Component {
             let eventBus = this.viewer.get('eventBus');
             // you may hook into any of the following events
             let events = [
-                'element.hover',
+                // 'element.hover',
                 // 'element.out',
-                // 'element.click',
+                'element.click',
                 // 'element.dblclick',
                 // 'element.mousedown',
                 // 'element.mouseup'
@@ -189,17 +164,22 @@ class Bpmn extends Component {
             events.forEach((event) => {
                 eventBus.on(event, (e) => {
                     console.log(e.element.id)
-                    const { clientX, clientY } = e.originalEvent;
-                    const arr = historyList.filter(li => li.activityId == e.element.id);
+                    res.map((li, i) => {
+                        li.index = i
+                    })
+                    const arr = res.filter(li => li.id == e.element.id);
+                    // console.log(arr, "是个啥")
                     if (arr.length >= 1) {
                         this.setState({
-                            x: clientX,
-                            y: clientY,
-                            selectedId: e.element.id,
+                            selectedIndex: "",
+                            selectedArr: arr,
+                            btn: false
                         });
+                        this.setEleColor(e.element.id)
                     } else {
                         this.setState({
-                            selectedId: '',
+                            selectedArr: [],
+                            btn: false
                         });
                     }
                 });
@@ -207,6 +187,21 @@ class Bpmn extends Component {
 
             this.canvas.zoom('fit-viewport');
             // canvas.addMarker('L1_AUDIT', 'highlight');
+
+            const elementsToColor = res.map(li => this.elementRegistry.get(li.id))
+            elementsToColor.map((li, i) => {
+                let color = '';
+                if (i == elementsToColor.length - 1) {
+                    color = "red";
+                } else {
+                    color = "green";
+                }
+                this.modeling.setColor([li], {
+                    stroke: color,
+                    // fill: 'yellow'
+                });
+            })
+
 
             // 删除 bpmn logo
             const bjsIoLogo = document.querySelector('.bjs-powered-by');
@@ -223,7 +218,48 @@ class Bpmn extends Component {
     }
 
     play = () => {
-        this.setElements()
+        const { speed } = this.state
+        const elementsToColor = res.map(li => this.elementRegistry.get(li.id))
+        elementsToColor.map((li, i) => {
+            let color = "";
+            if (i == elementsToColor.length - 1) {
+                color = "red";
+            } else {
+                color = "green";
+            }
+            setTimeout(() => {
+                this.modeling.setColor([li], {
+                    stroke: "yellow",
+                    fill: 'lightgreen'
+                });
+            }, i * speed + 200);
+            setTimeout(() => {
+                this.modeling.setColor([li], {
+                    stroke: color,
+                    // fill: 'yellow',
+                    fillText: "blue",
+                });
+            }, (i + 1) * speed + 200);
+        })
+    }
+
+    setEleColor = (id) => {
+        const { speed } = this.state
+        const elementsToColor = res.map(li => this.elementRegistry.get(li.id))
+        const length = elementsToColor.length
+        this.modeling.setColor(elementsToColor, {
+            stroke: "green",
+            // fill: 'yellow'
+        });
+        this.modeling.setColor([elementsToColor[length - 1]], {
+            stroke: "red",
+            // fill: 'yellow'
+        });
+        const ele = this.elementRegistry.get(id)
+        this.modeling.setColor([ele], {
+            stroke: "yellow",
+            // fill: 'yellow'
+        });
     }
 
     onChange = value => {
@@ -234,49 +270,144 @@ class Bpmn extends Component {
     };
 
     render() {
-        const { x, y, selectedId, historyList } = this.state;
-        const detailArr = historyList.filter(v => v.activityId == selectedId);
+        const { selectedArr, selectedIndex, btn } = this.state;
+
+        // const detailArr = res.filter(v => v.id == selectedId);
         // console.log(detailArr.length >= 1 && selectedId);
-        return (
+        return <>
             <div style={{ display: 'flex', justifyContent: 'space-between' }}>
                 <div id="canvas" style={{ height: '100%', position: 'relative', width: '100%' }}>
                     <div
                         style={{
-                            position: 'fixed',
+                            position: "absolute",
+                            bottom: -500,
                             borderRadius: 10,
-                            padding: 10,
-                            display: detailArr.length >= 1 && selectedId ? 'block' : 'none',
-                            opacity: 0.8,
-                            left: x,
-                            top: y - 270,
                             width: 500,
-                            height: 250,
+                            minHeight: 500,
+                            padding: 10,
+                            display: "block",
                             backgroundColor: "#fff",
                             boxShadow: "2px 2px 5px #333333",
                             zIndex: 999
                         }}>
-                        {detailArr.map((li, index) => {
-                            return (
-                                <div key={index}>
-                                    <div>
-                                        <div> <span >{index + 1}.</span> &nbsp;&nbsp;{li.time}</div>
-                                        <div>  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{li.fullMessage}</div>
+                        <div>
+                            {selectedArr.map((li, index) => {
+                                return (
+                                    <div key={index}>
+                                        <div>
+                                            <div> <span >{li.index}.</span> &nbsp;&nbsp;{li.time}</div>
+                                            <div>  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{li.fullMessage}</div>
+                                        </div>
                                     </div>
-                                </div>
-                            );
-                        })}
+                                );
+                            })}
+                        </div>
+                        <div>
+                            <Button type="primary" onClick={() => {
+                                this.setState({
+                                    btn: true
+                                })
+                                const index = this.state.selectedIndex
+
+                                if (index === 0) {
+                                    this.setState({
+                                        selectedIndex: 1,
+                                        selectedArr: [{
+                                            ...res[0], index: 1
+                                        }]
+                                    })
+                                    this.setEleColor(res[index].id)
+                                } else if (index === 1) {
+                                    this.setState({
+                                        selectedArr: [{ ...res[0], index: 1 }]
+                                    })
+                                    this.setEleColor(res[index - 1].id)
+                                } else {
+                                    this.setState({
+                                        selectedIndex: index - 1,
+                                        selectedArr: [{
+                                            ...res[index - 1], index: index
+                                        }]
+                                    })
+                                    this.setEleColor(res[index - 1].id)
+                                }
+                            }}>上一步</Button>
+                            <Button type="primary" onClick={() => {
+                                this.setState({
+                                    btn: true
+                                })
+                                const index = this.state.selectedIndex
+                                if (index === 0) {
+                                    this.setState({
+                                        selectedIndex: index + 1,
+                                        selectedArr: [{
+                                            ...res[0], index: 1
+                                        }]
+                                    })
+                                    this.setEleColor(res[index].id)
+                                } else if (index === res.length) {
+                                    this.setState({
+                                        selectedArr: [{
+                                            ...res[index - 1], index: index
+                                        }]
+                                    })
+                                    this.setEleColor(res[index - 1].id)
+                                } else {
+                                    this.setState({
+                                        selectedIndex: index + 1,
+                                        selectedArr: [{
+                                            ...res[index - 1], index: index + 1
+                                        }]
+                                    })
+                                    this.setEleColor(res[index - 1].id)
+                                }
+
+
+                            }}>下一步</Button>
+                        </div>
                     </div>
                 </div>
                 <div>
-                    {historyList.map((li, index) => {
-                        return <div ket={index} style={{
-                            margin: "10px 0",
-                            padding: "5px 10px",
-                            minWidth: 300,
-                            background: li.activityId == selectedId ? "#E6F7FF" : "",
-                            border: li.activityId == selectedId ? "solid #91D5FF 1px" : "",
-                            borderRadius: 10
-                        }}>
+                    {res.map((li, index) => {
+                        let selected;
+                        if (btn) {
+                            selected = (selectedIndex - 1) == index
+                        } else {
+                            selected = (selectedArr.filter(item => item.id == li.id).length
+                                || (selectedIndex - 1) == index)
+                        }
+
+                        return <div ket={index}
+                            // onMouseOut={() => {
+                            //     // console.log("move")
+                            //     this.setState({ selectedId: "" })
+                            // }}
+                            // onMouseOver={() => {
+                            //     this.setState({ selectedId: li.id })
+                            //     this.setEleColor(li.id)
+
+                            // }}
+                            onClick={() => {
+                                this.setState({
+                                    selectedArr: [{
+                                        ...li,
+                                        index: index + 1
+                                    }],
+                                    selectedIndex: index + 1,
+                                    btn: false
+                                })
+                                this.setEleColor(li.id)
+                            }}
+                            style={{
+                                margin: "10px 0",
+                                padding: "5px 10px",
+                                minWidth: 300,
+                                background: selected ? "#E6F7FF" : "",
+                                border: selected ? "solid #91D5FF 1px" : "",
+                                borderRadius: 10,
+                                transition: "all 200ms",
+                                cursor: "pointer"
+                            }}>
                             <div> <span >{index + 1}.</span> &nbsp;&nbsp;{li.time}</div>
                             <div>  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{li.fullMessage}</div>
                         </div>
@@ -294,7 +425,8 @@ class Bpmn extends Component {
                     pagination={false}
                     dataSource={detailList} /> */}
             </div>
-        );
+
+        </>;
     }
 }
 export default Bpmn;
@@ -311,22 +443,73 @@ const marks = {
     },
 };
 
-const res = [
-    'START',
-    'SEQ1',
-    'createBlackListTask2',
-    'sid-787EDF98-CF0D-4AAC-A302-05C32567F090',
-    'L1_AUDIT',
-    'sid-B8959B94-53A4-435B-B408-4DA8FFB3B87C',
-    'CON1',
-    'sid-CC5AD9DE-37B4-40AE-B7CB-2F66E5A20DF7',
-    'L1_REVIEW',
-    'sid-5EF32400-BB8D-4DD8-99B9-705E6C461F4F',
-    'sid-6FE1C297-EE0C-4A68-8336-7B3FDFD95C23',
-    'sid-C7803D10-41ED-4901-A41A-770FB49A3D91',
-    'L1_AUDIT',
-    'sid-B8959B94-53A4-435B-B408-4DA8FFB3B87C',
-    'CON1',
-    'sid-CC5AD9DE-37B4-40AE-B7CB-2F66E5A20DF7',
-    'L1_REVIEW',
-]
+const res = [{
+    id: 'START',
+    time: "2019-10-10 9:9:10",
+    fullMessage: "第一步开始"
+}, {
+    id: 'SEQ1',
+    time: "2019-10-10 9:9:10",
+    fullMessage: "第二步干了啥啥啥啥啥啥..."
+}, {
+    id: 'createBlackListTask2',
+    time: "2019-10-10 9:9:10",
+    fullMessage: "第三步干了啥啥啥啥啥啥..."
+}, {
+    id: 'sid-787EDF98-CF0D-4AAC-A302-05C32567F090',
+    time: "2019-10-10 9:9:10",
+    fullMessage: "第四步干了啥啥啥啥啥啥..."
+},
+{
+    id: 'L1_AUDIT',
+    time: "2019-10-10 9:9:10",
+    fullMessage: "第五步干了啥啥啥啥啥啥..."
+}, {
+    id: 'sid-B8959B94-53A4-435B-B408-4DA8FFB3B87C',
+    time: "2019-10-10 9:9:10",
+    fullMessage: "干了啥啥啥啥啥啥..."
+}, {
+    id: 'CON1',
+    time: "2019-10-10 9:9:10",
+    fullMessage: "干了啥啥啥啥啥啥..."
+}, {
+    id: 'sid-CC5AD9DE-37B4-40AE-B7CB-2F66E5A20DF7',
+    time: "2019-10-10 9:9:10",
+    fullMessage: "干了啥啥啥啥啥啥..."
+}, {
+    id: 'L1_REVIEW',
+    time: "2019-10-10 9:9:10",
+    fullMessage: "干了啥啥啥啥啥啥..."
+}, {
+    id: 'sid-5EF32400-BB8D-4DD8-99B9-705E6C461F4F',
+    time: "2019-10-10 9:9:10",
+    fullMessage: "干了啥啥啥啥啥啥..."
+}, {
+    id: 'sid-6FE1C297-EE0C-4A68-8336-7B3FDFD95C23',
+    time: "2019-10-10 9:9:10",
+    fullMessage: "干了啥啥啥啥啥啥..."
+}, {
+    id: 'sid-C7803D10-41ED-4901-A41A-770FB49A3D91',
+    time: "2019-10-10 9:9:10",
+    fullMessage: "干了啥啥啥啥啥啥..."
+}, {
+    id: 'L1_AUDIT',
+    time: "2019-10-10 9:9:10",
+    fullMessage: "干了啥啥啥啥啥啥..."
+}, {
+    id: 'sid-B8959B94-53A4-435B-B408-4DA8FFB3B87C',
+    time: "2019-10-10 9:9:10",
+    fullMessage: "干了啥啥啥啥啥啥..."
+}, {
+    id: 'CON1',
+    time: "2019-10-10 9:9:10",
+    fullMessage: "干了啥啥啥啥啥啥..."
+}, {
+    id: 'sid-CC5AD9DE-37B4-40AE-B7CB-2F66E5A20DF7',
+    time: "2019-10-10 9:9:10",
+    fullMessage: "干了啥啥啥啥啥啥..."
+}, {
+    id: 'L1_REVIEW',
+    time: "2019-10-10 9:9:10",
+    fullMessage: "干了啥啥啥啥啥啥..."
+}]
